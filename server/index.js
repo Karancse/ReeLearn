@@ -1,17 +1,17 @@
 const express = require('express')
 const app = express()
 var fs = require('fs');
-//var http = require('http');
-//var https = require('https');
+var http = require('http');
+var https = require('https');
 //var privateKey  = fs.readFileSync('sslcert/server.key', 'utf8');
 //var certificate = fs.readFileSync('sslcert/server.crt', 'utf8');
 
-/*
+
 var credentials = {
-    key: fs.readFileSync('ssl/keys/server.key'),
-    cert: fs.readFileSync('ssl/keys/server.crt')
+    key: fs.readFileSync(__dirname + '/dist/server/ssl/keys/server.key'),
+    cert: fs.readFileSync(__dirname + '/dist/server/ssl/keys/server.crt')
 };
-*/
+
 
 const mysql = require('mysql')
 
@@ -48,6 +48,8 @@ app.post("/signUp", (req, res) => {
 })
 
 app.post("/logIn", (req, res) => {
+    //console.log(req);
+    //console.log(req.body);
     const username = req.body.username;
     const password = req.body.password;
 
@@ -65,10 +67,12 @@ app.post("/logIn", (req, res) => {
     });
 })
 
-//var httpsServer = https.createServer(credentials, app);
+var httpsServer = https.createServer(credentials, app);
 
-//httpsServer.listen(3001);
+httpsServer.listen(3001);
 
+/*
 app.listen(3001,() => {
     console.log('\nListening to localhost:3001');
 });
+*/
