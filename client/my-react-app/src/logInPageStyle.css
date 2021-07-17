@@ -1,0 +1,55 @@
+.logInPanel{
+    border: 2px solid rgb(38, 0, 255);
+    border-radius: 10px;
+    margin-left: 500px;
+    margin-top: 200px;
+    align-items: center;
+    padding: 30px;
+    width: fit-content;
+    height: fit-content;
+}
+
+.logInPanel h3{
+    text-align: center;
+}
+
+.enterUsername{
+    margin: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.enterUsername span{
+    padding: 10px;
+}
+
+.usernameInput{
+    height: 30px;
+    padding-left: 10px;
+}
+
+.enterPassword{
+    margin: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.enterPassword span{
+    padding: 10px;
+}
+
+.passwordInput{
+    height: 30px;
+    padding-left: 10px;
+}
+
+.submitDetails{
+    padding-left: 40%;
+}
+
+.submitButton{
+    border-radius: 4px;
+}
+

@@ -1,0 +1,78 @@
+.homePage{
+    width: 1600px;
+    height: 720px;
+}
+
+.homeScreen{
+    border: 2px solid rgb(17, 0, 255);
+    border-radius:10px;
+    width: 90%;
+    height: 90%;
+    padding:10px;
+    margin-top: 10px;
+    margin-left: 10px;
+}
+
+.searchBar{
+    padding-left:20px;
+}
+
+.searchBar input{
+    height: 30px;
+    padding-left: 20px;
+    padding-right: 20px;
+    margin-right: 20px;
+}
+
+.searchBar button{
+    height: 35px;
+    padding-left: 10px;
+    padding-right: 10px;
+    border-radius: 10px;
+    font-size: 2ch;
+    border: 2px solid rgb(255, 60, 0);
+    background: rgb(118, 193, 255);
+}
+
+.searchBar button:hover{
+    background: rgb(50, 122, 255);
+}
+
+.topVideos{
+    border: 2px solid rgb(17, 0, 255);
+    margin: 10px;
+    padding: 20px;
+    width: 90%;
+    height: 200px;
+}
+
+h4{
+    margin: 0px;
+}
+
+.topQuizzes{
+    border: 2px solid rgb(17, 0, 255);
+    margin: 10px;
+    padding: 20px;
+    width: 90%;
+    height: 200px;
+}
+
+.bottomButtons{ 
+    display: flex;
+    justify-content: space-around;
+}
+
+.bottomButtons button{
+    height: 100px;
+    width: 200px;
+    border-radius: 10px;
+    font-size: 2ch;
+    font-style: italic;
+    border: 2px solid  rgb(17, 0, 255);
+    background: rgb(178, 172, 255);
+}
+
+.bottomButtons button:hover{
+    background:rgb(133, 124, 255);
+}
