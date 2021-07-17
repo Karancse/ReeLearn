@@ -1,5 +1,5 @@
 import React from 'react';
-import './App.css';
+import './homePageStyle.css';
 
 
 class TopVideos extends React.Component {
