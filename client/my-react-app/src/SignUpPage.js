@@ -1,5 +1,5 @@
 import React from 'react';
-import './App.css';
+import './signUpPageStyle.css';
 import Axios from 'axios';
 
 
