@@ -1,5 +1,5 @@
 import React from 'react';
-import './logInStyle.css';
+import './logInPageStyle.css';
 import Axios from 'axios';
 
 function EnterUsername (props) {
