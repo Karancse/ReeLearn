@@ -1,17 +1,21 @@
 const express = require('express')
 const app = express()
+
+app.use(express.static("public"));
+app.use(express.json());
+
 var fs = require('fs');
 var http = require('http');
 var https = require('https');
 //var privateKey  = fs.readFileSync('sslcert/server.key', 'utf8');
 //var certificate = fs.readFileSync('sslcert/server.crt', 'utf8');
 
-
+/*
 var credentials = {
     key: fs.readFileSync(__dirname + '/dist/server/ssl/keys/server.key'),
     cert: fs.readFileSync(__dirname + '/dist/server/ssl/keys/server.crt')
 };
-
+*/
 
 const mysql = require('mysql')
 
@@ -28,14 +32,14 @@ db.connect((err) => {
     }
     console.log('MySql connected...\n');
 });
-
+/*
 app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     next();
   });
-
+*/
 app.post("/signUp", (req, res) => {
     const username = req.body.username;
     const password = req.body.password;
@@ -47,9 +51,16 @@ app.post("/signUp", (req, res) => {
     });
 })
 
+//app.post("/logIn", (req, res) => {
+//    console.log(req);
+//})
+
+
 app.post("/logIn", (req, res) => {
     //console.log(req);
     //console.log(req.body);
+    //console.log(req.body1);
+    //console.log(req)
     const username = req.body.username;
     const password = req.body.password;
 
@@ -67,12 +78,12 @@ app.post("/logIn", (req, res) => {
     });
 })
 
+/*
 var httpsServer = https.createServer(credentials, app);
 
 httpsServer.listen(3001);
+*/
 
-/*
 app.listen(3001,() => {
     console.log('\nListening to localhost:3001');
 });
-*/
