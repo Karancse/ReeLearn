@@ -7,6 +7,10 @@ app.use(express.json());
 var fs = require('fs');
 var http = require('http');
 var https = require('https');
+
+const cors = require('cors');
+app.use(cors())
+
 //var privateKey  = fs.readFileSync('sslcert/server.key', 'utf8');
 //var certificate = fs.readFileSync('sslcert/server.crt', 'utf8');
 
@@ -64,7 +68,7 @@ app.post("/logIn", (req, res) => {
     const username = req.body.username;
     const password = req.body.password;
 
-    let SQL = "SELECT * FROM userCredentials WHERE username = "+username+" AND password = "+password;
+    let SQL = "SELECT * FROM userCredentials WHERE username = \'"+username+"\' AND password = \'"+password+"\'";
     db.query(SQL, (err, result) => {
         if(err) throw err;
         if(result.length==1)
