@@ -70,7 +70,29 @@ class LoginPanel extends React.Component{
       return;
     }
     
-    Axios.post("https://localhost:3001/logIn", {
+    const data = { 
+      username: this.state.username,
+      password: this.state.password
+    };
+
+    const options = {
+      method: 'POST',
+      url: 'http://localhost:3001/logIn',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+      //body1: data
+    };
+
+    //fetch('/logIn',options);
+    Axios(options).then(res => {
+      this.setState({
+        status: res.data.status
+      })
+    });
+    /*
+    Axios.post("http://localhost:3001/logIn", {
       username: this.state.username,
       password: this.state.password
     }).then(res => {
@@ -78,8 +100,9 @@ class LoginPanel extends React.Component{
         this.setState({
           status: res.data.status
         });
+    
   });
-  
+  */
 /*
   Axios({
     method: 'post',
@@ -109,7 +132,9 @@ class LoginPanel extends React.Component{
 
 function LoginPage() {
   return (
-    <LoginPanel />
+    <div className="logInPage">
+      <LoginPanel />
+    </div>
   );
 }
 
