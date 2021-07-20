@@ -2,6 +2,8 @@ import React from 'react';
 import './logInPageStyle.css';
 import Axios from 'axios';
 
+
+
 function EnterUsername (props) {
   return (
     <div className="enterUsername">
@@ -69,7 +71,7 @@ class LoginPanel extends React.Component{
       });
       return;
     }
-    
+    /*
     const data = { 
       username: this.state.username,
       password: this.state.password
@@ -91,18 +93,23 @@ class LoginPanel extends React.Component{
         status: res.data.status
       })
     });
-    /*
+    */
+    
     Axios.post("http://localhost:3001/logIn", {
       username: this.state.username,
       password: this.state.password
-    }).then(res => {
+    }, { 
+      headers: {
+      'Content-Type': 'application/json;charset=UTF-8'
+    } 
+  }).then(res => {
         console.log(res);
         this.setState({
           status: res.data.status
         });
     
   });
-  */
+  
 /*
   Axios({
     method: 'post',
