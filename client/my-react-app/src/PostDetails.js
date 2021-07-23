@@ -123,27 +123,36 @@ class TopicDetails extends React.Component {
     }
 }
 */
-/*
+
 class TopicDetails extends React.Component{
 
     constructor (props) {
         super(props);
+    
+        var branchDropdown =    <div className="dropdown-content">
+                                    <p onClick = {this.setState({branchSelected: <div className='branchSelected'>branchToSelect</div>})}>CSE</p>
+                                    <p>MEC</p>
+                                </div>
+
         this.state = {
-            branchSelected: 1
+            branchSelected: <div className="branchNotSelected" onClick = { this.setState({ branchDropdown: this.branchDropdown }) } >Branch</div>   ,
+            branchDropdown: null
         }
     }
-
     
     render() {
         return (
             <div className="topicDetails">
-                <button>{ this.state.branchSelected }</button>
+                <div className="topicSelector">
+                        { this.state.branchSelected }
+                        { this.state.branchDropdown }
+                </div>  
             </div>
         )
     }
 
 }
-*/
+
 function Uploads (props) {
 
     function CreateNowButton (props) {
@@ -246,7 +255,7 @@ class PostDetails extends React.Component {
             <div className="postDetails">
                 <div className="postDetailsContent">
                     <CommunityGuidelines></CommunityGuidelines>
-                    
+                    <TopicDetails></TopicDetails>
                     <Uploads></Uploads>
                     <Description></Description>
                     <PricingOptions></PricingOptions>
