@@ -159,12 +159,14 @@ class CameraView extends React.Component {
             <div className="cameraViewSpace">
                 <div className="cameraView">
                     <div className="videoPosition">
-                        <VideoRecorder
-                            onRecordingComplete={videoBlob => {
+                        <div className="videoWidth">
+                            <VideoRecorder
+                                onRecordingComplete={videoBlob => {
       // Do something with the video...
-                            console.log('videoBlob', videoBlob)
-                            }}
-                        />      
+                                console.log('videoBlob', videoBlob)
+                                }}
+                            />
+                        </div>      
                     </div>
                 </div>
             </div>
@@ -227,8 +229,11 @@ class UploadNow extends React.Component {
                             addScreenshot = {image => this.props.addScreenshot(image) }
                         />
                     </div>
-                    <Screenshots screenshots = { this.state.screenshots }></Screenshots>
+                    <div className="screenshotsSpace">
+                        <Screenshots screenshots = { this.state.screenshots }></Screenshots>
+                    </div>
                 </div>
+                
                     <CameraView>
                     </CameraView>
                 
