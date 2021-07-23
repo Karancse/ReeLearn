@@ -42,6 +42,10 @@
     margin-top: 55px;
 }
 
+.branchNotSelected{
+    border: 2px solid rgb( 0, 0, 0);
+}
+
 .uploads{
     margin-top: 60px;
 }
@@ -101,11 +105,4 @@
     height: 100%;
     font-size: 20px;
 }
-
-
-
-
-
-
-
 
