@@ -3,7 +3,10 @@ import './App.css';
 import LoginPage from './LoginPage';
 import WelcomePanel from './WelcomePage';
 import SignUpPage from './SignUpPage';
-import HomeScreen from './HomePage';
+import HomePage from './HomePage';
+import PostDetails from './PostDetails';
+import UploadNow from './UploadNow';
+
 
 class AppClass extends React.Component{
     constructor(props){
@@ -33,7 +36,17 @@ class AppClass extends React.Component{
         }
         else if(page === 'homePage'){
             this.setState({
-                page: <HomeScreen onClick = { page => this.Update(page) }/>
+                page: <HomePage onClick = { page => this.Update(page) }/>
+            })
+        }
+        else if(page === 'postDetails'){
+            this.setState({
+                page: <PostDetails onClick = { page => this.Update(page) }/>
+            })
+        }
+        else if(page === 'uploadNow'){
+            this.setState({
+                page: <UploadNow onClick = { page => this.Update(page) }/>
             })
         }
     }
