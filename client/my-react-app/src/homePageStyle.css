@@ -1,31 +1,29 @@
 .homePage{
-    width: 1600px;
-    height: 720px;
+    width: 100vw;
+    height: 100vh;
 }
 
 .homeScreen{
     border: 2px solid rgb(17, 0, 255);
     border-radius:10px;
-    width: 90%;
-    height: 90%;
+    width: 95%;
+    height: 100%;
     padding:10px;
-    margin-top: 10px;
-    margin-left: 10px;
 }
 
 .searchBar{
-    padding-left:20px;
+    padding-left: 100px;
 }
 
 .searchBar input{
-    height: 30px;
+    height: 3ch;
     padding-left: 20px;
     padding-right: 20px;
     margin-right: 20px;
 }
 
 .searchBar button{
-    height: 35px;
+    height: 3ch;
     padding-left: 10px;
     padding-right: 10px;
     border-radius: 10px;
@@ -35,36 +33,116 @@
 }
 
 .searchBar button:hover{
-    background: rgb(50, 122, 255);
+    background: rgb(130, 174, 255);
 }
 
-.topVideos{
+.postButton {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.postButton button{
     border: 2px solid rgb(17, 0, 255);
+    border-radius: 5px;
+    background:rgb(17, 0, 255);
+    color: white;
+    padding: 5px 10px;
+    margin:10px;
+}
+
+.topVideosTitle{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 10px 30px;
+}
+
+.topVideosTitle button{
+    background:rgb(118, 193, 255);
+    border: 2px solid rgb(130, 174, 255);
+    border-radius: 5px;
+}
+
+.topVideosTitle button:hover{
+    background:rgb(81, 177, 255);
+}
+
+.topVideosContent{
+    border: 2px solid rgb(17, 0, 255);
+    border-radius: 30px;
     margin: 10px;
-    padding: 20px;
+    padding: 10px;
     width: 90%;
-    height: 200px;
+    height: 100px;
+    min-height: 100px;
+    height: fit-content;
 }
 
 h4{
     margin: 0px;
 }
 
-.topQuizzes{
-    border: 2px solid rgb(17, 0, 255);
-    margin: 10px;
-    padding: 20px;
-    width: 90%;
-    height: 200px;
+.topQuizzesTitle{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 10px 30px;
 }
 
-.bottomButtons{ 
+.topQuizzesTitle button{
+    background:rgb(118, 193, 255);
+    border: 2px solid rgb(130, 174, 255);
+    border-radius: 5px;
+}
+
+.topQuizzesTitle button:hover{
+    background:rgb(81, 177, 255);
+}
+
+.topQuizzesContent{
+    border: 2px solid rgb(17, 0, 255);
+    border-radius: 30px;
+    margin: 10px;
+    padding: 10px;
+    width: 90%;
+    height: 100px;
+}
+
+.topUniversitiesTitle{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 10px 30px;
+}
+
+.topUniversitiesTitle button{
+    background:rgb(118, 193, 255);
+    border: 2px solid rgb(130, 174, 255);
+    border-radius: 5px;
+}
+
+.topUniversitiesTitle button:hover{
+    background:rgb(81, 177, 255);
+}
+
+.topUniversitiesContent{
+    border: 2px solid rgb(17, 0, 255);
+    border-radius: 30px;
+    margin: 10px;
+    padding: 10px;
+    width: 90%;
+    height: 100px;
+}
+
+
+.navButtons{ 
     display: flex;
     justify-content: space-around;
 }
 
-.bottomButtons button{
-    height: 100px;
+.navButtons button{
+    height: fit-content;
     width: 200px;
     border-radius: 10px;
     font-size: 2ch;
@@ -73,6 +151,6 @@ h4{
     background: rgb(178, 172, 255);
 }
 
-.bottomButtons button:hover{
+.navButtons button:hover{
     background:rgb(133, 124, 255);
 }
