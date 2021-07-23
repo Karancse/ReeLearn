@@ -1,0 +1,140 @@
+.uploadNow {
+    height: 100vh;
+    display: flex;
+    flex-direction: row;
+}
+
+.leftPanel{
+    width: 30vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+.leftPanelMargin{
+    height: 90%;
+    border-right: 2px solid rgb(0, 0, 0);
+}
+
+.webcamCapture{
+    padding-top: 5%;
+}
+
+.webcam{
+    display: flex;
+    justify-content: center;
+}
+
+.cameraViewSpace {
+    width: 70vw;
+    display:flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+.cameraView {
+    height: 95%;
+    border-right: 2px solid rgb(0, 0, 0);
+    display:flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+.videoPosition{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.videoOptionsPosition{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.videoOptions{
+    width: 70%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.cameraOptionsSpace{
+    height: 100%;
+    width: 30vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+.cameraOptionsPosition{
+    height: fit-content;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.cameraOptions {
+    max-width: 90%;
+    min-width: 80%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    
+}
+
+.buttonClass{
+    width: 90px;
+    height: 120px;
+    border: 2px solid rgb(255, 255, 255);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+.buttonClass:hover{
+    border: 2px solid rgb(0, 0, 0);
+}
+
+.imageContainerPosition{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.imageContainer{
+    width: 50px;
+    height: 50px;
+    border: 2px solid rgb(0, 0, 0);
+    border-radius: 5px;
+}
+
+.startRecording, .stopRecording, .takeScreenshot, .upload{
+    text-align: center;
+    list-style: none;
+    margin-top: 5px;
+}
+
+.rightPanel{
+
+}
+
+.screenshots{
+    width: 90%;
+    height: 30%;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+
+
+
+
+
+
+
+
+
