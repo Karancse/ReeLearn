@@ -6,7 +6,7 @@ import SignUpPage from './SignUpPage';
 import HomePage from './HomePage';
 import PostDetails from './PostDetails';
 import UploadNow from './UploadNow';
-
+import EmbedVideos from './EmbedVideos';
 
 class AppClass extends React.Component{
     constructor(props){
@@ -47,6 +47,11 @@ class AppClass extends React.Component{
         else if(page === 'uploadNow'){
             this.setState({
                 page: <UploadNow onClick = { page => this.Update(page) }/>
+            })
+        }
+        else if(page === 'embedVideos'){
+            this.setState({
+                page: <EmbedVideos onClick = { page => this.Update(page) }/>
             })
         }
     }
