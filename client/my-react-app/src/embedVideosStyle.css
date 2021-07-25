@@ -1,0 +1,25 @@
+.embedVideos{
+    height: 30vh;
+}
+
+.Preview{
+    height: 70vh;
+}
+
+.videoPosition{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+.video{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.confirmPosition{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
