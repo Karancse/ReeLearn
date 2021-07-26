@@ -14,6 +14,7 @@ class WelcomePanel extends React.Component {
                 <button className='postDetailsNav' onClick={() => this.props.onClick('postDetails')}>Post</button>
                 <button className='uploadNowNav' onClick={() => this.props.onClick('uploadNow')}>Upload Now</button>
                 <button className="embedVideoNav" onClick={() => this.props.onClick('embedVideos')}>Embed Videos</button>
+                <button className="additionalSettingsNav" onClick={() => this.props.onClick('additionalSettings')}>Additional Settings</button>
             </div>
         )
     }
