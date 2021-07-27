@@ -30,6 +30,10 @@ const CredentialSchema = Schema({
 	password: {
 		type: String,
 		required: true,
+	},
+	email: {
+		type: String,
+		required: true,
 	}
 });
 
@@ -49,7 +53,7 @@ const connectDB = async () => {
 			useCreateIndex: true,
 		}).then(res => {
             console.log(16);  
-			console.log(res);
+			/*console.log(res);*/
         })
 	} catch (err) {
 		console.error(err.message);
@@ -63,9 +67,9 @@ var Credential = model('user', CredentialSchema);
 
 	
 	app.post("/signUp", async (req, res) => {
-		const { name, password, email } = req.body;
+		const { username, password, email } = req.body;
 
-		console.log("Post Request: "+name+" "+password+" "+email)
+		console.log("Post Request: "+username+" "+password+" "+email)
 	
 		credential = await Credential.findOne({ email })
 		
@@ -85,7 +89,7 @@ var Credential = model('user', CredentialSchema);
 		
 		console.log('saved');
 		return(
-			'Saved'
+			res.json('Saved')
 		)
 	})
 	
