@@ -62,31 +62,37 @@ connectDB();
 var Credential = model('user', CredentialSchema);
 
 	
-	app.post("/signUp", (req, res) => {
+	app.post("/signUp", async (req, res) => {
 		const { name, password, email } = req.body;
+
+		console.log("Post Request: "+name+" "+password+" "+email)
 	
-		credential = Credential.findOne({ email })
-		.then(res => {
-			if (credential) {
+		credential = await Credential.findOne({ email })
+		
+		if (credential) {
 				return res
 					.status(ErrorCode.HTTP_BAD_REQ)
 					.json(errorWrapper('User Already Exists'));
-			}
+		}
 
-			var credential = new Credential({
+		var credential = new Credential({
 				username,
 				password,
 				email
-			});
+		});
 	
-			credential.save()
-		})
-
+		await credential.save()
 		
-			
+		console.log('saved');
+		return(
+			'Saved'
+		)
 	})
 	
 	
-app.listen(3001,() => {
+	app.listen(3001,() => {
 		console.log('\nListening to localhost:3001');
-});
+	});
+
+
+
