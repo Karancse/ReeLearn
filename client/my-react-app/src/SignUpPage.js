@@ -1,7 +1,7 @@
 import React from 'react';
 import './signUpPageStyle.css';
 import Axios from 'axios';
-
+import Select from 'react-select';
 
 function EnterUsername (props) {
     return (
@@ -30,6 +30,61 @@ function EnterUsername (props) {
     )
   }
 
+  function ChooseRole (props) {
+
+    const options = [
+      { value: 'student', label: 'Student' },
+      { value: 'teacher', label: 'Teacher' },
+    ];
+    
+    return (
+      <div className="chooseRole">
+        <span>Choose Role:</span>
+        <Select
+          value={props.role}
+          onChange={props.onChange}
+          options={options}
+        />
+      </div>
+    )
+  }
+
+  function EnterDegree (props) {
+    return (
+      <div className="enterDegree">
+        <span>Enter Degree:</span>
+        <input className="degreeInput" onChange = { event => props.onChange(event.target.value) } type='text' placeholder='Your Degree'></input>
+      </div>
+    )
+  }
+
+  function EnterCourse (props) {
+    return (
+      <div className="enterCourse">
+        <span>Enter Course:</span>
+        <input className="courseInput" onChange = { event => props.onChange(event.target.value) } type='text' placeholder='Your Course'></input>
+      </div>
+    )
+  }
+
+  function EnterSemester (props) {
+    return (
+      <div className="enterSemester">
+        <span>Enter Semester:</span>
+        <input className="semesterInput" onChange = { event => props.onChange(event.target.value) } type='text' placeholder='Your Semester'></input>
+      </div>
+    )
+  }
+
+  function EnterUniversity (props) {
+    return (
+      <div className="enterUniversity">
+        <span>Enter University:</span>
+        <input className="universityInput" onChange = { event => props.onChange(event.target.value) } type='text' placeholder='Your University'></input>
+      </div>
+    )
+  }
+
   function SubmitButton (props) {
     return (
       <div className='submitDetails'>
@@ -46,6 +101,11 @@ function EnterUsername (props) {
         username : '',
         password : '',
         emailID : '',
+        role: null,
+        degree: '',
+        course: '',
+        semester: '',
+        university: '',
         status: ''
       };
     }
@@ -67,13 +127,45 @@ function EnterUsername (props) {
         emailID : emailID
       });
     }
+
+    UpdateRole(role) {
+      this.setState({
+        role : role
+      });
+    }
     
+    UpdateDegree(degree) {
+      this.setState({
+        degree : degree
+      });
+    }
+    
+    UpdateCourse(course) {
+      this.setState({
+        course : course
+      });
+    }
+    
+    UpdateSemester(semester) {
+      this.setState({
+        semester : semester
+      });
+    }
+
+    UpdateUniversity(university) {
+      this.setState({
+        university : university
+      });
+    }
+    
+    
+
     Submit() {
 
       if(this.state.username==null || this.state.username==='')
       {
         this.setState({
-          status: 'Enter username'
+          status: 'Enter Username'
         });
         return;
       }
@@ -81,17 +173,49 @@ function EnterUsername (props) {
       if(this.state.password==null || this.state.password==='')
       {
         this.setState({
-          status: 'Enter password'
+          status: 'Enter Password'
         });
         return;
       }
 
-      Axios.post('https://localhost:3001/signUp', {
+      if(this.state.emailID==null || this.state.emailID==='')
+      {
+        this.setState({
+          status: 'Enter EmailID'
+        });
+        return;
+      }
+      
+      console.log('Post Request.....')
+
+      Axios.post('http://localhost:3001/signUp', {
         username: this.state.username, 
-        password: this.state.password
+        password: this.state.password,
+        email: this.state.emailID
+      }, {
+        headers: {
+        'Content-Type': 'application/json;charset=UTF-8'
+        }
       }).then((res) => {
         this.setState({
-          status: res
+          status: res.data.status
+        });
+      });
+    
+    Axios.post('http://localhost:3002/createProfile', {
+        email: this.state.emailID,
+        role: this.state.role.value, 
+        degree: this.state.degree,
+        course: this.state.course,
+        semester: this.state.semester,
+        university: this.state.university
+      }, {
+        headers: {
+        'Content-Type': 'application/json;charset=UTF-8'
+        }
+      }).then((res) => {
+        this.setState({
+          status: res.data.status
         });
       });
 
@@ -116,7 +240,12 @@ function EnterUsername (props) {
           <EnterUsername username={ this.state.username } onChange={username => this.UpdateUsername(username) }/>
           <EnterPassword password={ this.state.password } onChange={password => this.UpdatePassword(password) }/>
           <EnterEmailID emailID={ this.state.emailID } onChange={emailID => this.UpdateEmailID(emailID) }/>
-          <SubmitButton onClick={() => this.Submit }/>
+          <ChooseRole role={ this.state.role } onChange={role => this.UpdateRole(role) }/>
+          <EnterDegree degree={ this.state.degree } onChange={degree => this.UpdateDegree(degree)}/>
+          <EnterCourse course={ this.state.course } onChange={course => this.UpdateCourse(course)}/>
+          <EnterSemester semester={this.state.semester} onChange={semester => this.UpdateSemester(semester)}/>
+          <EnterUniversity university={this.state.university} onChange={university => this.UpdateUniversity(university)}/>
+          <SubmitButton onClick={() => this.Submit() }/>
           <p>{ this.state.status }</p>
         </div>
       );
