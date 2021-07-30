@@ -8,6 +8,9 @@ const router = Router();
 const express = require('express')
 const app = express()
 
+
+const session = require('express-session')
+
 app.use(express.static("public"));
 app.use(express.json());
 
@@ -16,6 +19,18 @@ var fs = require('fs');
 const cors = require('cors');
 app.use(cors())
 
+const passport = require('passport')
+const LocalStrategy = require('passport-local').Strategy
+
+app.use(session({
+	secret: 'secret',
+	reSave: false,
+	saveUninitialized: false
+}))
+
+app.use(passport.initialize())
+app.use(passport.session())
+
 //import { Schema } from 'mongoose';
 
 const Schema = mongoose.Schema;
@@ -23,7 +38,7 @@ const Schema = mongoose.Schema;
 const model = mongoose.model;
 
 const CredentialSchema = Schema({
-	name: {
+	username: {
 		type: String,
 		required: true,
 	},
@@ -36,7 +51,6 @@ const CredentialSchema = Schema({
 		required: true,
 	}
 });
-
 
 const password = 'asdfpoiu1234';
 var uri = "mongodb+srv://Karan:"+password+"@reelearn.lrvqf.mongodb.net/userDetails?retryWrites=true&w=majority"
@@ -63,20 +77,22 @@ const connectDB = async () => {
 
 connectDB();
 
-var Credential = model('user', CredentialSchema);
+var Credential = model('credential', CredentialSchema);
 
 	
 	app.post("/signUp", async (req, res) => {
 		const { username, password, email } = req.body;
 
-		console.log("Post Request: "+username+" "+password+" "+email)
+		console.log("SignUp Request: "+username+" "+password+" "+email)
 	
 		credential = await Credential.findOne({ email })
 		
 		if (credential) {
-				return res
-					.status(ErrorCode.HTTP_BAD_REQ)
-					.json(errorWrapper('User Already Exists'));
+				console.log("An User with the EmailID Already Exists")
+				res.send({
+					status: 'An User with the EmailID Already Exists'
+				})
+				return
 		}
 
 		var credential = new Credential({
@@ -89,14 +105,83 @@ var Credential = model('user', CredentialSchema);
 		
 		console.log('saved');
 		return(
-			res.json('Saved')
+			res.send({
+				status: 'Signed Up'
+			})
 		)
 	})
 	
+	app.post("/logIn1", async (req, res) => {
+		const { username, password } = req.body;
+
+		console.log("LogIn Request: "+username+" "+password)
+
+		credential = await Credential.findOne({ username , password })
+
+		console.log(credential)
+
+		if (!credential) {
+				console.log("Invalid")
+				res.send({
+					status: 'Invalid'
+				})
+		}
+
+		if(credential)
+		{
+			console.log("Valid")
+			res.send({
+				status: 'Valid'
+			})
+		}
+	})
+
+	function initializePassport(passport) {
+		const authenticateUser = async (email , password, done) => {
+			credential = await Credential.findOne({ email })
 	
+			if(!credential) {
+				done(null, false, { message: "User doesn't exist" } )
+			}
+	
+			if ( credential.password!=password ){
+				done(null, false, { message: "Incorrect Password" } )
+			}
+	
+			done(null, credential)
+	
+		}
+	
+		passport.use(new LocalStrategy({ usernameField: 'email' }, authenticateUser))
+		passport.serializeUser((user, done) => {  done(null, user.id) })
+		passport.deserializeUser((id, done) => {  done(null, Credential.findById(id)) })
+	}
+	
+	
+	
+	initializePassport(passport)
+	
+
+	app.post("/logIn", passport.authenticate('local', {
+		successRedirect: '/',
+		failureRedirect: '/inValid',
+		})
+	)
+	
+	app.get('/', (req, res) => {
+		res.send({
+			status: 'Valid'
+		})
+	})
+
+	app.get('/inValid',(req, res) => {
+		res.send({
+			status: 'Invalid'
+		})
+	})
+
+
 	app.listen(3001,() => {
 		console.log('\nListening to localhost:3001');
 	});
-
-
 
