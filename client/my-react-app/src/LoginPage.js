@@ -13,6 +13,15 @@ function EnterUsername (props) {
   )
 }
 
+function EnterEmail (props) {
+  return (
+    <div className="enterEmail">
+      <span>Enter Email:</span>
+      <input className='emailInput' onChange = { event => props.onChange(event.target.value) } type='text' placeholder='Your Email'></input>
+    </div>
+  )
+}
+
 function EnterPassword (props) {
   return (
     <div className="enterPassword">
@@ -37,6 +46,7 @@ class LoginPanel extends React.Component{
     super(props);
     this.state = {
       username : '',
+      email: '',
       password : '',
       status: ''
     };
@@ -48,6 +58,12 @@ class LoginPanel extends React.Component{
     });
   }
 
+  UpdateEmail(email){
+    this.setState({
+      email: email
+    })
+  }
+
   UpdatePassword(password) {
     this.setState({
       password : password
@@ -56,10 +72,10 @@ class LoginPanel extends React.Component{
 
   Submit() {
 
-    if(this.state.username==null || this.state.username==='')
+    if(this.state.email==null || this.state.email==='')
     {
       this.setState({
-        status:'Enter username'
+        status:'Enter email'
       });
       return;
     }
@@ -96,7 +112,7 @@ class LoginPanel extends React.Component{
     */
     
     Axios.post("http://localhost:3001/logIn", {
-      username: this.state.username,
+      email: this.state.email,
       password: this.state.password
     }, { 
       headers: {
@@ -127,7 +143,7 @@ class LoginPanel extends React.Component{
     return (
       <div className="logInPanel">
         <h3>LogIn Page</h3>
-        <EnterUsername username={ this.state.username } onChange={username => this.UpdateUsername(username) }/>
+        <EnterEmail email={ this.state.email } onChange={email => this.UpdateEmail(email) }/>
         <EnterPassword password={ this.state.password } onChange={password => this.UpdatePassword(password) }/>
         <SubmitButton onClick={() => this.Submit() }/>
         <p>{ this.state.status }</p>
