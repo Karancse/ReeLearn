@@ -1,7 +1,7 @@
 import React from 'react';
 import './logInPageStyle.css';
 import Axios from 'axios';
-
+import { reactLocalStorage } from 'reactjs-localstorage';
 
 
 function EnterUsername (props) {
@@ -123,7 +123,10 @@ class LoginPanel extends React.Component{
         this.setState({
           status: res.data.status
         });
-    
+        reactLocalStorage.set( 'username' , res.data.username );
+        this.setState({
+          status: reactLocalStorage.get('username')
+        })
   });
   
 /*
