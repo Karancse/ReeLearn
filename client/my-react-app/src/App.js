@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './App.css';
+import { AppContext } from "./libs/contextLib";
 import LoginPage from './LoginPage';
 import WelcomePanel from './WelcomePage';
 import SignUpPage from './SignUpPage';
@@ -8,6 +9,9 @@ import PostDetails from './PostDetails';
 import UploadNow from './UploadNow';
 import EmbedVideos from './EmbedVideos';
 import AdditionalSettings from './AdditionalSettings';
+import ProfilePage from './ProfilePage';
+import {reactLocalStorage} from 'reactjs-localstorage';
+
 
 class AppClass extends React.Component{
     constructor(props){
@@ -15,7 +19,7 @@ class AppClass extends React.Component{
         this.state = {
             page: <WelcomePanel onClick = { page => this.Update(page) }/>
         }
-    
+        reactLocalStorage.set('username' , 'guest');
     }
 
     Update(page) {
@@ -37,7 +41,7 @@ class AppClass extends React.Component{
         }
         else if(page === 'homePage'){
             this.setState({
-                page: <HomePage onClick = { page => this.Update(page) }/>
+                page: <HomePage pageRedirect = { page => this.Update(page) }/>
             })
         }
         else if(page === 'postDetails'){
@@ -60,6 +64,11 @@ class AppClass extends React.Component{
                 page: <AdditionalSettings onClick = { page => this.Update(page) }/>
             })
         }
+        else if(page === 'profilePage') {
+            this.setState({
+                page: <ProfilePage onClick = { page => this.update(page) } />
+            })
+        }
     }
     
     render() {
@@ -70,8 +79,10 @@ class AppClass extends React.Component{
 }
 
 function AppFunction(props){
+    const [isAuthenticated, userHasAuthenticated] = useState(false);
     return (
-        <AppClass/>
+        <AppClass>
+        </AppClass>
     )
 }
 
