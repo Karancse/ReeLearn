@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 
 const { Router } = require ('express');
 const router = Router();
+const path = require('path');
 
 const express = require('express')
 const app = express()
@@ -15,6 +16,26 @@ const cors = require('cors');
 const { profile } = require('console');
 app.use(cors())
 
+const multer = require('multer');
+
+const uuidv4 = require('uuidv4');
+
+const DIR = './public/uploads/';
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, DIR);
+    },
+    filename: (req, file, cb) => {
+        const fileName = file.originalname.toLowerCase().split(' ').join('-');
+        cb(null, uuidv4 + '-' + fileName)
+    }
+});
+
+var upload = multer({ storage: storage });
+
+//var upload = multer()
+
 const Schema = mongoose.Schema;
 
 const model = mongoose.model;
@@ -24,6 +45,10 @@ const ProfileSchema = Schema({
 		type: String,
 		required: true,
 	},
+    role: {
+        type: String,
+        required: true
+    },
     degree: {
         type: String,
         required: true,
@@ -39,6 +64,10 @@ const ProfileSchema = Schema({
     university: {
         type: String,
         required: true,
+    },
+    image: {
+        data: Buffer,
+        contentType: String
     }
 });
 
@@ -68,9 +97,9 @@ connectDB();
 
 var Profile = model('profile', ProfileSchema);
 
-app.post("/createProfile", async (req, res) => {
-    const { email , role , degree , course , semester , university } = req.body;
-
+app.post("/createProfile", upload.single('image'), async (req, res) => {
+    const { email , role , degree , course , semester , university , preview } = req.body;
+    const url = req.protocol + '://' + req.get('host');
 	console.log("Create Profile Request: "+email+" "+role+" "+degree+" "+course+" "+semester+" "+university)
 	
 	profile = await Profile.findOne({ email })
@@ -82,6 +111,10 @@ app.post("/createProfile", async (req, res) => {
         })
         return
     }
+    
+    console.log("Directory Path:")
+
+    console.log(req.body.image);
 
     var profile = new Profile({
         email,
@@ -89,7 +122,8 @@ app.post("/createProfile", async (req, res) => {
         degree,
         course,
         semester,
-        university
+        university,
+        image: url + '/public/uploads/' +req.body.image.filename
     })
 
     await profile.save();
@@ -97,7 +131,8 @@ app.post("/createProfile", async (req, res) => {
     console.log("updated");
     return(
         res.send({
-            status: 'Updated'
+            status: 'Updated',
+            image: image
         })
     )
 })
@@ -141,3 +176,6 @@ app.post("/updateProfile", async (req, res) => {
 app.listen(3002,() => {
     console.log('\nListening to localhost:3002');
 })
+
+
+
