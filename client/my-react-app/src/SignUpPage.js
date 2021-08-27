@@ -2,6 +2,21 @@ import React from 'react';
 import './signUpPageStyle.css';
 import Axios from 'axios';
 import Select from 'react-select';
+let formData = new FormData();
+
+function UploadImage (props) {
+  return (
+    <div className="uploadImage">
+      <div className="imagePosition">
+        <img src={ props.preview } width="70px"></img>
+      </div>
+      <h5>Upload Image (optional)</h5>
+      <div className="inputPosition">
+        <input type="file" name="file" onChange={(e) => props.onChange(e.target.files[0])} />
+      </div>
+    </div>
+  )
+}
 
 function EnterUsername (props) {
     return (
@@ -98,6 +113,8 @@ function EnterUsername (props) {
     constructor(props) {
       super(props);
       this.state = {
+        image: './profile.JPG',
+        preview: './profile.JPG',
         username : '',
         password : '',
         emailID : '',
@@ -110,6 +127,27 @@ function EnterUsername (props) {
       };
     }
   
+    UpdateImage(image) {
+      this.setState({
+        image: image
+      })
+
+      if(image) {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          this.setState({
+            preview : reader.result
+          });
+        };
+        reader.readAsDataURL(image);
+      } else {
+        this.setState({
+            preview : null
+        })
+      }
+
+    }
+
     UpdateUsername(username) {
       this.setState({
         username : username
@@ -202,13 +240,42 @@ function EnterUsername (props) {
         });
       });
     
+    console.log("Directory Path:", __dirname)
+
+    console.log(this.state.image)
+
+    formData.append('email' , this.state.emailID)
+    formData.append('role' , this.state.role.value) 
+    formData.append('degree' , this.state.degree)
+    formData.append('course' , this.state.course)
+    formData.append('semester' , this.state.semester)
+    formData.append('university' , this.state.university)
+    formData.append('image' , this.state.image)
+    formData.append('preview' , this.state.preview)
+    
+    const config = {     
+      headers: { 'content-type': 'multipart/form-data' }
+    }
+
+    Axios.post('http://localhost:3002/createProfile', formData , config)
+      .then((res) => {
+        this.setState({
+          status: res.data.status
+        });
+      });
+    }
+    
+    /*
     Axios.post('http://localhost:3002/createProfile', {
         email: this.state.emailID,
         role: this.state.role.value, 
         degree: this.state.degree,
         course: this.state.course,
         semester: this.state.semester,
-        university: this.state.university
+        university: this.state.university,
+        image: this.state.image,
+        preview: this.state.preview,
+        directoryPath: __dirname
       }, {
         headers: {
         'Content-Type': 'application/json;charset=UTF-8'
@@ -220,7 +287,7 @@ function EnterUsername (props) {
       });
 
     }
-    
+    */
 
     dfgdfgSubmit() {
       Axios.get('https://emailvalidation.abstractapi.com/v1/?api_key=af3acf9aaab3429689f89318a31f939b&email=tgkaran219@gmail.com')
@@ -237,6 +304,7 @@ function EnterUsername (props) {
       return (
         <div className="signUpPanel">
           <h3>SignUp Page</h3>
+          <UploadImage preview={ this.state.preview } onChange={ image => this.UpdateImage(image) }  />
           <EnterUsername username={ this.state.username } onChange={username => this.UpdateUsername(username) }/>
           <EnterPassword password={ this.state.password } onChange={password => this.UpdatePassword(password) }/>
           <EnterEmailID emailID={ this.state.emailID } onChange={emailID => this.UpdateEmailID(emailID) }/>
