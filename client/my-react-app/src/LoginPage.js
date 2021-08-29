@@ -4,42 +4,6 @@ import Axios from 'axios';
 import { reactLocalStorage } from 'reactjs-localstorage';
 
 
-function EnterUsername (props) {
-  return (
-    <div className="enterUsername">
-      <span>Enter Username:</span>
-      <input className='usernameInput' onChange = { event => props.onChange(event.target.value) } type='text' placeholder='Your Username'></input>
-    </div>
-  )
-}
-
-function EnterEmail (props) {
-  return (
-    <div className="enterEmail">
-      <span>Enter Email:</span>
-      <input className='emailInput' onChange = { event => props.onChange(event.target.value) } type='text' placeholder='Your Email'></input>
-    </div>
-  )
-}
-
-function EnterPassword (props) {
-  return (
-    <div className="enterPassword">
-      <span>Enter Password:</span>
-      <input className='passwordInput' onChange = { event => props.onChange(event.target.value) } type='text' placeholder='Your Password'></input>
-    </div>
-  )
-}
-
-
-function SubmitButton (props) {
-  return (
-    <div className='submitDetails'>
-      <button className='submitButton' onClick = { () => props.onClick() } type='submit'>Submit</button>
-    </div> 
-  )
-}
-
 class LoginPanel extends React.Component{
 
   constructor(props) {
@@ -87,29 +51,6 @@ class LoginPanel extends React.Component{
       });
       return;
     }
-    /*
-    const data = { 
-      username: this.state.username,
-      password: this.state.password
-    };
-
-    const options = {
-      method: 'POST',
-      url: 'http://localhost:3001/logIn',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(data)
-      //body1: data
-    };
-
-    //fetch('/logIn',options);
-    Axios(options).then(res => {
-      this.setState({
-        status: res.data.status
-      })
-    });
-    */
     
     Axios.post("http://localhost:3001/logIn", {
       email: this.state.email,
@@ -123,22 +64,13 @@ class LoginPanel extends React.Component{
         this.setState({
           status: res.data.status
         });
+        console.log(res.data.username)
+        console.log(res)
         reactLocalStorage.set( 'username' , res.data.username );
         this.setState({
           status: reactLocalStorage.get('username')
         })
   });
-  
-/*
-  Axios({
-    method: 'post',
-    url: 'https://localhost:3001/logIn',
-    data: {
-      firstName: this.state.username,
-      lastName: this.state.password
-    }
-  });
-*/
 
 }
 
@@ -146,9 +78,21 @@ class LoginPanel extends React.Component{
     return (
       <div className="logInPanel">
         <h3>LogIn Page</h3>
-        <EnterEmail email={ this.state.email } onChange={email => this.UpdateEmail(email) }/>
-        <EnterPassword password={ this.state.password } onChange={password => this.UpdatePassword(password) }/>
-        <SubmitButton onClick={() => this.Submit() }/>
+        <div className="enterEmail">
+          <span>Enter Email:</span>
+          <input className='emailInput' onChange = { event => this.UpdateEmail(event.target.value) } type='text' placeholder='Your Email'></input>
+        </div>
+        <div className="enterPassword">
+          <span>Enter Password:</span>
+          <input className='passwordInput' onChange = { event => this.UpdatePassword(event.target.value) } type='text' placeholder='Your Password'></input>
+        </div>
+        <div className='submitDetails'>
+          <button className='submitButton' onClick = { () => this.Submit() } type='submit'>Submit</button>
+        </div> 
+        <div className="signUp">
+          <span>Don't have an account?</span>
+          <button className="signUpButton" onClick = { () => this.props.pageUpdate("signUp") } >Sign Up</button>
+        </div>
         <p>{ this.state.status }</p>
       </div>
     );
