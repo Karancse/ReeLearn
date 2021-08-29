@@ -26,7 +26,7 @@ class AppClass extends React.Component{
         if(page === 'logIn')
         {
             this.setState({
-                page: <LoginPage />
+                page: <LoginPage pageUpdate = { page => this.Update(page) }/>
             })
         }
         else if(page === 'signUp'){
