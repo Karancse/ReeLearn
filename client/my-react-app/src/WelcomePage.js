@@ -15,6 +15,8 @@ class WelcomePanel extends React.Component {
                 <button className='uploadNowNav' onClick={() => this.props.onClick('uploadNow')}>Upload Now</button>
                 <button className="embedVideoNav" onClick={() => this.props.onClick('embedVideos')}>Embed Videos</button>
                 <button className="additionalSettingsNav" onClick={() => this.props.onClick('additionalSettings')}>Additional Settings</button>
+                <button className="profilePageNav" onClick={() => this.props.onClick('profilePage')}>Profile Page</button>
+                
             </div>
         )
     }
@@ -29,4 +31,5 @@ function WelcomePage(props) {
     );
   }
 */
+
 export default WelcomePanel;
