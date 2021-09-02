@@ -1,329 +1,190 @@
-import React from 'react';
-import './signUpPageStyle.css';
-import Axios from 'axios';
-import Select from 'react-select';
-let formData = new FormData();
+//const mongoose = require ('mongoose');
 
-function UploadImage (props) {
-  return (
-    <div className="uploadImage">
-      <div className="imagePosition">
-        <img src={ props.preview } width="70px"></img>
-      </div>
-      <h5>Upload Image (optional)</h5>
-      <div className="inputPosition">
-        <input type="file" name="file" onChange={(e) => props.onChange(e.target.files[0])} />
-      </div>
-    </div>
-  )
-}
+const mongoose = require('mongoose');
 
-function EnterUsername (props) {
-    return (
-      <div className="enterUsername">
-        <span>Enter Username:</span>
-        <input className='usernameInput' onChange = { event => props.onChange(event.target.value) } type='text' placeholder='Your Username'></input>
-      </div>
-    )
-  }
-  
-  function EnterPassword (props) {
-    return (
-      <div className="enterPassword">
-        <span>Enter Password:</span>
-        <input className='passwordInput' onChange = { event => props.onChange(event.target.value) } type='text' placeholder='Your Password'></input>
-      </div>
-    )
-  }
-  
-  function EnterEmailID (props) {
-    return (
-      <div className="enterEmailID">
-        <span>Enter EmailID:</span>
-        <input className="emailIDInput" onChange = { event => props.onChange(event.target.value) } type='text' placeholder='Your Email ID'></input>
-      </div>
-    )
-  }
+const { Router } = require ('express');
+const router = Router();
 
-  function ChooseRole (props) {
+const express = require('express')
+const app = express()
 
-    const options = [
-      { value: 'student', label: 'Student' },
-      { value: 'teacher', label: 'Teacher' },
-    ];
-    
-    return (
-      <div className="chooseRole">
-        <span>Choose Role:</span>
-        <Select
-          value={props.role}
-          onChange={props.onChange}
-          options={options}
-        />
-      </div>
-    )
-  }
 
-  function EnterDegree (props) {
-    return (
-      <div className="enterDegree">
-        <span>Enter Degree:</span>
-        <input className="degreeInput" onChange = { event => props.onChange(event.target.value) } type='text' placeholder='Your Degree'></input>
-      </div>
-    )
-  }
+const session = require('express-session')
 
-  function EnterCourse (props) {
-    return (
-      <div className="enterCourse">
-        <span>Enter Course:</span>
-        <input className="courseInput" onChange = { event => props.onChange(event.target.value) } type='text' placeholder='Your Course'></input>
-      </div>
-    )
-  }
+app.use(express.static("public"));
+app.use(express.json());
 
-  function EnterSemester (props) {
-    return (
-      <div className="enterSemester">
-        <span>Enter Semester:</span>
-        <input className="semesterInput" onChange = { event => props.onChange(event.target.value) } type='text' placeholder='Your Semester'></input>
-      </div>
-    )
-  }
+var fs = require('fs');
 
-  function EnterUniversity (props) {
-    return (
-      <div className="enterUniversity">
-        <span>Enter University:</span>
-        <input className="universityInput" onChange = { event => props.onChange(event.target.value) } type='text' placeholder='Your University'></input>
-      </div>
-    )
-  }
+const cors = require('cors');
+app.use(cors())
 
-  function SubmitButton (props) {
-    return (
-      <div className='submitDetails'>
-        <button className='submitButton' onClick = { () => props.onClick() } type='submit'>Submit</button>
-      </div> 
-    )
-  }
+const passport = require('passport')
+const LocalStrategy = require('passport-local').Strategy
 
-  class SignUpPanel extends React.Component{
+app.use(session({
+	secret: 'secret',
+	reSave: false,
+	saveUninitialized: false
+}))
 
-    constructor(props) {
-      super(props);
-      this.state = {
-        image: './profile.JPG',
-        preview: './profile.JPG',
-        username : '',
-        password : '',
-        emailID : '',
-        role: null,
-        degree: '',
-        course: '',
-        semester: '',
-        university: '',
-        status: ''
-      };
-    }
-  
-    UpdateImage(image) {
-      this.setState({
-        image: image
-      })
+app.use(passport.initialize())
+app.use(passport.session())
 
-      if(image) {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          this.setState({
-            preview : reader.result
-          });
-        };
-        reader.readAsDataURL(image);
-      } else {
-        this.setState({
-            preview : null
+const Schema = mongoose.Schema;
+
+const model = mongoose.model;
+
+const CredentialSchema = Schema({
+	username: {
+		type: String,
+		required: true,
+	},
+	password: {
+		type: String,
+		required: true,
+	},
+	email: {
+		type: String,
+		required: true,
+	}
+});
+
+const password = 'asdfpoiu1234';
+var uri = "mongodb+srv://Karan:"+password+"@reelearn.lrvqf.mongodb.net/userDetails?retryWrites=true&w=majority"
+//var uri = "mongodb://Karan:"+password+"@clustermasjeed1-shard-00-00-ekpfe.mongodb.net:27017,clustermasjeed1-shard-00-01-ekpfe.mongodb.net:27017,clustermasjeed1-shard-00-02-ekpfe.mongodb.net:27017/test?ssl=true&replicaSet=ClusterMasjeed1-shard-0&authSource=admin&retryWrites=true"
+
+
+const connectDB = async () => {
+	try {
+        console.log(9);
+		mongoose.connect(uri, {
+			useNewUrlParser: true,
+			useUnifiedTopology: true,
+			useFindAndModify: false,
+			useCreateIndex: true,
+		}).then(res => {
+            console.log(16);  
         })
-      }
+	} catch (err) {
+		console.error(err.message);
+		process.exit(1);
+	}
+};
 
-    }
+connectDB();
 
-    UpdateUsername(username) {
-      this.setState({
-        username : username
-      });
-    }
-  
-    UpdatePassword(password) {
-      this.setState({
-        password : password
-      });
-    }
+var Credential = model('credential', CredentialSchema);
 
-    UpdateEmailID(emailID) {
-      this.setState({
-        emailID : emailID
-      });
-    }
+	
+	app.post("/signUp", async (req, res) => {
+		const { username, password, email } = req.body;
 
-    UpdateRole(role) {
-      this.setState({
-        role : role
-      });
-    }
-    
-    UpdateDegree(degree) {
-      this.setState({
-        degree : degree
-      });
-    }
-    
-    UpdateCourse(course) {
-      this.setState({
-        course : course
-      });
-    }
-    
-    UpdateSemester(semester) {
-      this.setState({
-        semester : semester
-      });
-    }
+		console.log("SignUp Request: "+username+" "+password+" "+email)
+	
+		credential = await Credential.findOne({ email })
+		
+		if (credential) {
+				console.log("An User with the EmailID Already Exists")
+				res.send({
+					status: 'An User with the EmailID Already Exists'
+				})
+				return
+		}
 
-    UpdateUniversity(university) {
-      this.setState({
-        university : university
-      });
-    }
-    
-    
+		var credential = new Credential({
+				username,
+				password,
+				email
+		});
+	
+		await credential.save()
+		
+		console.log('saved');
+		return(
+			res.send({
+				status: 'Valid'
+			})
+		)
+	})
+	
+	app.post("/logIn1", async (req, res) => {
+		const { username, password } = req.body;
 
-    Submit() {
+		console.log("LogIn Request: "+username+" "+password)
 
-      if(this.state.username==null || this.state.username==='')
-      {
-        this.setState({
-          status: 'Enter Username'
-        });
-        return;
-      }
+		credential = await Credential.findOne({ username , password })
 
-      if(this.state.password==null || this.state.password==='')
-      {
-        this.setState({
-          status: 'Enter Password'
-        });
-        return;
-      }
+		console.log(credential)
 
-      if(this.state.emailID==null || this.state.emailID==='')
-      {
-        this.setState({
-          status: 'Enter EmailID'
-        });
-        return;
-      }
-      
-      console.log('Post Request.....')
+		if (!credential) {
+				console.log("Invalid")
+				res.send({
+					status: 'Invalid'
+				})
+		}
 
-      Axios.post('http://localhost:3001/signUp', {
-        username: this.state.username, 
-        password: this.state.password,
-        email: this.state.emailID
-      }, {
-        headers: {
-        'Content-Type': 'application/json;charset=UTF-8'
-        }
-      }).then((res) => {
-        this.setState({
-          status: res.data.status
-        });
-      });
-    
-    console.log("Directory Path:", __dirname)
+		if(credential)
+		{
+			console.log("Valid")
+			res.send({
+				status: 'Valid' ,
+				username: username
+			})
+		}
+	})
 
-    console.log(this.state.image)
+	function initializePassport(passport) {
+		const authenticateUser = async (email , password, done) => {
+			credential = await Credential.findOne({ email })
+	
+			if(!credential) {
+				return done(null, false)
+			}
+	
+			if ( credential.password!=password ){
+				return done(null, false)
+			}
+	
+			done(null, credential)
+	
+		}
+	
+		passport.use(new LocalStrategy({ usernameField: 'email' }, authenticateUser))
+		passport.serializeUser((user, done) => {  done(null, user.id) })
+		passport.deserializeUser((id, done) => {  done(null, Credential.findById(id)) })
+	}
+	
+	initializePassport(passport)
+	
+	app.post("/logIn", function(req,res,next) {
+		passport.authenticate('local', function(err , credential , info) {
+			if ( !credential ) return res.redirect('/inValid');
+			res.send({
+				status: 'Valid',
+				username: credential.username,
+				email: credential.email
+			})
+		}) (req, res, next);
+	})
 
-    formData.append('email' , this.state.emailID)
-    formData.append('role' , this.state.role.value) 
-    formData.append('degree' , this.state.degree)
-    formData.append('course' , this.state.course)
-    formData.append('semester' , this.state.semester)
-    formData.append('university' , this.state.university)
-    formData.append('image' , this.state.image)
-    formData.append('preview' , this.state.preview)
-    
-    const config = {     
-      headers: { 'content-type': 'multipart/form-data' }
-    }
+	app.get('/valid', (req, res) => {
+		console.log(req)
+		res.send({
+			status: 'Valid',
+			username: req.username,
+			email: req.email
+		})
+	})
 
-    Axios.post('http://localhost:3002/createProfile', formData , config)
-      .then((res) => {
-        this.setState({
-          status: res.data.status
-        });
-      });
-    }
-    
-    /*
-    Axios.post('http://localhost:3002/createProfile', {
-        email: this.state.emailID,
-        role: this.state.role.value, 
-        degree: this.state.degree,
-        course: this.state.course,
-        semester: this.state.semester,
-        university: this.state.university,
-        image: this.state.image,
-        preview: this.state.preview,
-        directoryPath: __dirname
-      }, {
-        headers: {
-        'Content-Type': 'application/json;charset=UTF-8'
-        }
-      }).then((res) => {
-        this.setState({
-          status: res.data.status
-        });
-      });
-
-    }
-    */
-
-    dfgdfgSubmit() {
-      Axios.get('https://emailvalidation.abstractapi.com/v1/?api_key=af3acf9aaab3429689f89318a31f939b&email=tgkaran219@gmail.com')
-        .then(response => {
-          console.log(response.data);
-        })
-        .catch(error => {
-          console.log(error);
-        });
-    }
+	app.get('/inValid',(req, res) => {
+		res.send({
+			status: 'Invalid'
+		})
+	})
 
 
-    render() {
-      return (
-        <div className="signUpPanel">
-          <h3>SignUp Page</h3>
-          <UploadImage preview={ this.state.preview } onChange={ image => this.UpdateImage(image) }  />
-          <EnterUsername username={ this.state.username } onChange={username => this.UpdateUsername(username) }/>
-          <EnterPassword password={ this.state.password } onChange={password => this.UpdatePassword(password) }/>
-          <EnterEmailID emailID={ this.state.emailID } onChange={emailID => this.UpdateEmailID(emailID) }/>
-          <ChooseRole role={ this.state.role } onChange={role => this.UpdateRole(role) }/>
-          <EnterDegree degree={ this.state.degree } onChange={degree => this.UpdateDegree(degree)}/>
-          <EnterCourse course={ this.state.course } onChange={course => this.UpdateCourse(course)}/>
-          <EnterSemester semester={this.state.semester} onChange={semester => this.UpdateSemester(semester)}/>
-          <EnterUniversity university={this.state.university} onChange={university => this.UpdateUniversity(university)}/>
-          <SubmitButton onClick={() => this.Submit() }/>
-          <p>{ this.state.status }</p>
-        </div>
-      );
-    }
-  }
+	app.listen(3001,() => {
+		console.log('\nListening to localhost:3001');
+	});
 
-  function SignUpPage() {
-    return (
-      <SignUpPanel />
-    );
-  }
-  
-  export default SignUpPage;
