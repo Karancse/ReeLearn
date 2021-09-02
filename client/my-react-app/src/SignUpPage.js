@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import './signUpPageStyle.css';
 import Axios from 'axios';
 import Select from 'react-select';
+import S3 from "react-aws-s3";
 let formData = new FormData();
+
 
 function UploadImage (props) {
   return (
@@ -12,7 +14,7 @@ function UploadImage (props) {
       </div>
       <h5>Upload Image (optional)</h5>
       <div className="inputPosition">
-        <input type="file" name="file" onChange={(e) => props.onChange(e.target.files[0])} />
+        <input ref={ props.ref } type="file" name="file" onChange={(e) => props.onChange(e.target.files[0])} />
       </div>
     </div>
   )
@@ -125,8 +127,10 @@ function EnterUsername (props) {
         university: '',
         status: ''
       };
+      //var fileInput = useRef();
     }
   
+    
     UpdateImage(image) {
       this.setState({
         image: image
@@ -198,7 +202,7 @@ function EnterUsername (props) {
     
     
 
-    Submit() {
+    async Submit() {
 
       if(this.state.username==null || this.state.username==='')
       {
@@ -226,7 +230,7 @@ function EnterUsername (props) {
       
       console.log('Post Request.....')
 
-      Axios.post('http://localhost:3001/signUp', {
+      await Axios.post('http://localhost:3001/signUp', {
         username: this.state.username, 
         password: this.state.password,
         email: this.state.emailID
@@ -239,11 +243,74 @@ function EnterUsername (props) {
           status: res.data.status
         });
       });
-    
-    console.log("Directory Path:", __dirname)
+      
+      if(this.state.status!="Valid"){
+        console.log("status =",this.state.status)
+        console.log("Returning")
+        return;
+      }
 
-    console.log(this.state.image)
+      await Axios.post('http://localhost:3002/createProfile', {
+        email: this.state.emailID,
+        role: this.state.role.value, 
+        degree: this.state.degree,
+        course: this.state.course,
+        semester: this.state.semester,
+        university: this.state.university
+      }, {
+        headers: {
+        'Content-Type': 'application/json;charset=UTF-8'
+        }
+      }).then((res) => {
+        this.setState({
+          status: res.data.status
+        });
+      });
 
+      if(this.state.status=="Valid"){
+        const config = {
+          bucketName: "reelearnimages",
+          region: "ap-south-1",
+          accessKeyId: "AKIAVUI26QSLW4PA3PT6",
+          secretAccessKey: "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"
+        }
+
+        const ReactS3Client = new S3(config);
+        ReactS3Client.uploadFile(this.state.image , this.state.emailID).then(data => {
+          console.log(data)
+          if (data.status === 204) {
+            console.log("success")
+          } else {
+            console.log("fail")
+          }
+        })
+      }
+
+    }
+    /*
+    const handleClick = event => {
+      event.preventDefault();
+      let file = fileInput.current.files[0];
+      let newFileName = fileInput.current.files[0].name;
+      const config = {
+        bucketName: "reelearnimages",
+        region: "ap-south-1",
+        accessKeyId: "AKIAVUI26QSLW4PA3PT6",
+        secretAccessKey: "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"
+      }
+      const ReactS3Client = new S3(config)
+      ReactS3Client.uploadFile(file, newFileName).then(data => {
+        console.log(data);
+        if (data.status === 204) {
+          console.log("success")
+        } else {
+          console.log("fail")
+        }
+      })
+    }
+  }
+  */
+    /*
     formData.append('email' , this.state.emailID)
     formData.append('role' , this.state.role.value) 
     formData.append('degree' , this.state.degree)
@@ -264,7 +331,7 @@ function EnterUsername (props) {
         });
       });
     }
-    
+    */
     /*
     Axios.post('http://localhost:3002/createProfile', {
         email: this.state.emailID,
