@@ -10,6 +10,7 @@ import UploadNow from './UploadNow';
 import EmbedVideos from './EmbedVideos';
 import AdditionalSettings from './AdditionalSettings';
 import ProfilePage from './ProfilePage';
+import ReactUpload from './ReactUpload';
 import {reactLocalStorage} from 'reactjs-localstorage';
 
 
@@ -20,6 +21,7 @@ class AppClass extends React.Component{
             page: <WelcomePanel onClick = { page => this.Update(page) }/>
         }
         reactLocalStorage.set('username' , 'guest');
+        reactLocalStorage.set('email' , 'guest');
     }
 
     Update(page) {
@@ -69,6 +71,7 @@ class AppClass extends React.Component{
                 page: <ProfilePage onClick = { page => this.update(page) } />
             })
         }
+        
     }
     
     render() {
