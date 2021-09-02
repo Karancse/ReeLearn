@@ -1,15 +1,42 @@
 import React from 'react';
 import './homePageStyle.css';
-
+import { ReactSearchAutocomplete } from 'react-search-autocomplete';
 
 /*
 <iframe width="560" height="315" src="https://www.youtube.com/embed/DAQUIO_Y2CA" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 */
 
 function SearchBar (props) {
+    const items = [
+        {
+          id: 0,
+          name: 'Cobol'
+        },
+        {
+          id: 1,
+          name: 'JavaScript'
+        },
+        {
+          id: 2,
+          name: 'Basic'
+        },
+        {
+          id: 3,
+          name: 'PHP'
+        },
+        {
+          id: 4,
+          name: 'Java'
+        }
+      ]
     return (
         <div className = "searchBar">
-            <input type="text" onChange = { event => props.onChange(event.target.value) } ></input>
+            <ReactSearchAutocomplete
+                items={items}
+                
+                onSearch={ event => console.log(event) }
+                onSelect={ event => console.log(event) }
+            />
             <button onClick = { () => props.onSubmit() } >Search</button>
         </div>
     )
@@ -111,7 +138,18 @@ function NavButtons(props){
 function BottomButtons(props){
     return (
         <div className = "bottomButtons">
-            
+            <div className="home">
+
+            </div>
+            <div className="notes">
+
+            </div>
+            <div className="bookMarks">
+
+            </div>
+            <div className="profile">
+                <img src="profile.JPG" onClick = { () => props.pageRedirect('profilePage') }></img>
+            </div>
         </div>
     )
 }
@@ -150,17 +188,17 @@ class HomeScreen extends React.Component{
                 <TopQuizzes searchKey = { this.state.searchedKey } />
                 <TopUniversities searchKey = { this.state.searchedKey } />
                 <NavButtons searchKey = { this.state.searchedKey } />
-                <BottomButtons />
+                <BottomButtons pageRedirect = { page => this.props.pageRedirect('profilePage') } />
             </div>
         )
     }
 
 }
 
-function HomePage(){
+function HomePage(props){
     return (
         <div className="homePage">
-            <HomeScreen/>
+            <HomeScreen pageRedirect = { page => props.pageRedirect(page) }/>
         </div>
     )
 }
