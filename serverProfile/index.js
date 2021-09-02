@@ -16,81 +16,6 @@ const cors = require('cors');
 const { profile } = require('console');
 app.use(cors())
 
-const multer = require('multer');
-
-const uuidv4 = require('uuidv4');
-
-const DIR = './public/uploads/';
-
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, DIR);
-    },
-    filename: (req, file, cb) => {
-        const fileName = file.originalname.toLowerCase().split(' ').join('-');
-        cb(null, uuidv4 + '-' + fileName)
-    }
-});
-
-var upload = multer({ storage: storage });
-
-const aws = require('aws-sdk')
-const multerS3 = require("multer-s3")
-
-const S3_ACCESS_KEY = "AKIAVUI26QSLW4PA3PT6"
-const S3_SECRET_ACCESS_KEY = "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"
-const S3_BUCKET_REGION = "ap-south-1"
-
-const s3 = new aws.S3({
-    accessKeyId : S3_ACCESS_KEY,
-    secretAccessKey : S3_SECRET_ACCESS_KEY,
-    region : S3_BUCKET_REGION
-})
-
-
-/*
-const s3Storage = (bucketName) => multerS3({
-    s3: s3,
-    bucket: bucketName,
-    metadata: function (req, file, cb) {
-        cb(null, { fieldName: file.fieldname });
-    },
-    key: function(req, file, cb){
-        cb(null, "image.JPG")
-    }
-})
-
-const uploadS3 = (bucketName) => multer({ storage: s3Storage })
-
-
-*/
-
-var uploadS3 = (bucketName) => multerS3({ 
-    storage: storage,
-    bucket: bucketName,
-    limits: { fileSize: maxSize },
-    fileFilter: function (req, file, cb){
-    
-        // Set the filetypes, it is optional
-        var filetypes = /jpeg|jpg|png/;
-        var mimetype = filetypes.test(file.mimetype);
-  
-        var extname = filetypes.test(path.extname(
-                    file.originalname).toLowerCase());
-        
-        if (mimetype && extname) {
-            return cb(null, true);
-        }
-      
-        cb("Error: File upload only supports the "
-                + "following filetypes - " + filetypes);
-      } 
-  
-}).single("image-upload");       
-  
-
-//var upload = multer()
-
 const Schema = mongoose.Schema;
 
 const model = mongoose.model;
@@ -120,11 +45,6 @@ const ProfileSchema = Schema({
         type: String,
         required: true,
     }
-//    ,
-//    image: {
-//        data: Buffer,
-//        contentType: String
-//    }
 });
 
 const password = 'asdfpoiu1234';
@@ -153,14 +73,17 @@ connectDB();
 
 var Profile = model('profile', ProfileSchema);
 
-app.post("/createProfile", upload.single('image'), async (req, res) => {
-    const { email , role , degree , course , semester , university } = req.body;
-    const url = req.protocol + '://' + req.get('host');
-	console.log("Create Profile Request: "+email+" "+role+" "+degree+" "+course+" "+semester+" "+university)
-	
-	profile = await Profile.findOne({ email })
 
-    if(profile){
+
+
+app.post("/createProfile", async (req, res) => {
+    const { email , role , degree , course , semester , university } = req.body;
+
+    console.log("Create Profile Request: "+email+" "+role+" "+degree+" "+course+" "+semester+" "+university)
+	
+	var profile1 = await Profile.findOne({ email })
+
+    if(profile1){
         console.log("Invalid")
         res.send({
             status: 'Invalid'
@@ -168,34 +91,13 @@ app.post("/createProfile", upload.single('image'), async (req, res) => {
         return
     }
     
-    const uploadImage = uploadS3("reelearnimages")
-
-    uploadImage((req, res, err) => {
-        if(err) 
-            return res.status(400).json({ success: false, message: err.message })
-    })
-
-    console.log(req.files);
-
-    return (
-        res.send({
-            status: "Valid"
-        })
-    )
-    /*
-    console.log("Directory Path:")
-
-    console.log(req.body.image);
-
-
     var profile = new Profile({
         email,
         role,
         degree,
         course,
         semester,
-        university,
-        image: url + '/public/uploads/' +req.body.image.filename
+        university
     })
 
     await profile.save();
@@ -203,11 +105,9 @@ app.post("/createProfile", upload.single('image'), async (req, res) => {
     console.log("updated");
     return(
         res.send({
-            status: 'Updated',
-            image: image
+            status: 'Valid',
         })
     )
-    */
 })
 
 app.post("/updateProfile", async (req, res) => {
@@ -242,6 +142,33 @@ app.post("/updateProfile", async (req, res) => {
     return(
         res.send({
             status: 'Updated'
+        })
+    )
+})
+
+app.post("/getProfile", async (req, res) => {
+    const { email } = req.body;
+
+    console.log("Get Profile Request: "+email)
+	
+	var profile1 = await Profile.findOne({ email })
+
+    if(profile1){
+        return (
+            res.send({
+                status: "Profile Found",
+                role: profile1.role,
+                course: profile1.course,
+                branch: profile1.branch,
+                semester: profile1.semester,
+                university: profile1.university
+            })
+        )
+    }
+    
+    return(
+        res.send({
+            status: 'Profile Not Found',
         })
     )
 })
