@@ -1,5 +1,6 @@
 import React from 'react';
 import './postDetailsStyle.css';
+import Select from 'react-select';
 
 function CommunityGuidelines (props) {
     return (
@@ -14,139 +15,94 @@ function CommunityGuidelines (props) {
         </div>
     )
 }
-/*
-class TopicDetails extends React.Component {
-    
-    constructor (props) {
-        super(props);
-        
-        var branchDropdown =    <div className="dropdown-content">
-                                    <p>CSE</p>
-                                    <p>MEC</p>
-                                </div>
-        var subjectDropdown =   <div className="dropdown-content">
-                                    <p>JS</p>
-                                    <p>ReactJS</p>
-                                </div>
-        var semesterDropdown =  <div className="dropdown-content">
-                                    <p>1</p>
-                                    <p>2</p>
-                                </div>
-        var universityDropdown =<div className="dropdown-content">
-                                    <p>Amrita School Of Engineering</p>
-                                    <p>ReeLearn Internship</p>
-                                </div>
-               
-        this.state =    {
-            branchSelected: <div className='branchNotSelected'>Branch</div>,
-            branchDropdown: null,
-            subjectSelected: <div className='subjectNotSelected'>Subject</div>,
-            subjectDropdown: null,
-            semesterSelected: <div className='semesterNotSelected'>Semester</div>,
-            semesterDropdown: null,
-            universitySelected: <div className='universityNotSelected'>University</div>,
-            universityDropdown: null
-        }
-    }
 
-    SelectBranch (props) {
-        this.setState({
-            branchSelected: <div className='branchSelected'>this.props.branchSelected</div>
-        })
-    }
-
-    BranchSelector (props) {
-        return (
-            <div className="topicSelector">
-                { this.state.branchSelected }
-            </div>
-        )
-    }
-
-    SelectSubject (props) {
-        this.setState({
-            subjectSelected: <div className='subjectSelected'>this.props.subjectSelected</div>
-        })
-    }
-
-    SubjectSelector (props) {
-        return (
-            <div className="topicSelector">
-                { this.state.subjectSelected }
-            </div>
-        )
-    }
-
-    SelectSemester (props) {
-        this.setState({
-            semesterSelected: <div className='semesterSelected'>this.props.semesterSelected</div>
-        })
-    }
-
-    SemesterSelector (props) {
-        return (
-            <div className="topicSelector">
-                { this.state.semesterSelected }
-            </div>
-        )
-    }
-
-    SelectUniversity (props) {
-        this.setState({
-            universitySelected: <div className='universitySelected'>this.props.universitySelected</div>
-        })
-    }
-
-    UniversitySelector (props) {
-        return (
-            <div className="topicSelector">
-                { this.state.universitySelected }
-            </div>
-        )
-    }
+class BranchDropdown extends React.Component{
 
     render() {
         return (
-            <div className="topicDetails">
-                <h3>Topic Details</h3>
-                <div className="leftColumn">
-                    <this.BranchSelector></this.BranchSelector>
-                    <this.SubjectSelector></this.SubjectSelector>
-                </div>
-                <div className="rightColumn">
-                    <this.SemesterSelector></this.SemesterSelector>
-                    <this.UniversitySelector></this.UniversitySelector>
-                </div>
-                <button className="topicNameButton">Topic Name</button>
+            <div className="dropdown-content">
+                <p onClick = {this.setState({branchSelected: <div className='branchSelected'>branchToSelect</div>})}>CSE</p>
+                <p>MEC</p>
             </div>
         )
     }
+
 }
-*/
 
 class TopicDetails extends React.Component{
 
     constructor (props) {
         super(props);
-    
-        var branchDropdown =    <div className="dropdown-content">
-                                    <p onClick = {this.setState({branchSelected: <div className='branchSelected'>branchToSelect</div>})}>CSE</p>
-                                    <p>MEC</p>
-                                </div>
-
         this.state = {
-            branchSelected: <div className="branchNotSelected" onClick = { this.setState({ branchDropdown: this.branchDropdown }) } >Branch</div>   ,
-            branchDropdown: null
+
         }
+        const branchOptions = [
+            { value: 'branch', label: 'Branch' },
+            { value: 'CSE', label: 'CSE' },
+            { value: 'MEC', label: 'MEC' },
+            { value: 'ECE', label: 'ECE' },
+            { value: 'EEE', label: 'EEE' },
+            { value: 'EIE', label: 'EIE' },
+            { value: 'CHE', label: 'CHE' }
+        ]
+        const subjectOptions = [
+            { value: 'ReactJS', label: 'ReactJS' },
+            { value: 'NodeJS', label: 'NodeJS' },
+            { value: 'JaveScript', label: 'JaveScript' },
+            { value: 'MongoDB', label: 'MongoDB' }
+        ]
+        const semesterOptions = [
+            { value: '1', label: '1' },
+            { value: '2', label: '2' },
+            { value: '3', label: '3' },
+            { value: '4', label: '4' },
+            { value: '5', label: '5' },
+            { value: '6', label: '6' },
+            { value: '7', label: '7' },
+            { value: '8', label: '8' }
+        ]
+        const universityOptions = [
+            { value: 'AVVCB', label: 'AVVCB' },
+            { value: 'AVVBN', label: 'AVVBN' }
+        ]
     }
-    
+
+
     render() {
         return (
             <div className="topicDetails">
                 <div className="topicSelector">
-                        { this.state.branchSelected }
-                        { this.state.branchDropdown }
+                    <div className="select">
+                        <Select
+                            value="branch"
+                            onChange={ this.props.updateBranch }
+                            options={ this.branchOptions }
+                        />
+                    </div>
+                    <div className="select">
+                        <Select
+                            value="Subject"
+                            onChange={ this.props.updateSubject }
+                            options={ this.subjectOptions }
+                        />
+                    </div>
                 </div>  
+                <div className="topicSelector">
+                    <div className="select">    
+                        <Select
+                            value="Semester"
+                            onChange={ this.props.updateSemester }
+                            options={ this.semesterOptions }
+                        />
+                    </div>
+                    <div className="select">
+                        <Select
+                            value="University"
+                            onChange={ this.props.updateUniversity }
+                            options={ this.universityOptions }
+                        />
+                    </div>
+                </div>
             </div>
         )
     }
