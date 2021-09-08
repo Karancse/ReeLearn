@@ -1,4 +1,4 @@
-import React from 'react';
+import React , { useState } from 'react';
 import './postDetailsStyle.css';
 import Select from 'react-select';
 
@@ -29,13 +29,8 @@ class BranchDropdown extends React.Component{
 
 }
 
-class TopicDetails extends React.Component{
+function TopicDetails (props){
 
-    constructor (props) {
-        super(props);
-        this.state = {
-
-        }
         const branchOptions = [
             { value: 'branch', label: 'Branch' },
             { value: 'CSE', label: 'CSE' },
@@ -65,48 +60,49 @@ class TopicDetails extends React.Component{
             { value: 'AVVCB', label: 'AVVCB' },
             { value: 'AVVBN', label: 'AVVBN' }
         ]
-    }
 
 
-    render() {
+    
         return (
             <div className="topicDetails">
                 <div className="topicSelector">
                     <div className="select">
+                        <div className="selectTitle">Branch : </div>
                         <Select
-                            value="branch"
-                            onChange={ this.props.updateBranch }
-                            options={ this.branchOptions }
+                            value= { props.branch}
+                            onChange={ props.updateBranch }
+                            options={ branchOptions }
                         />
                     </div>
                     <div className="select">
+                        <div className="selectTitle">Subject : </div>
                         <Select
-                            value="Subject"
-                            onChange={ this.props.updateSubject }
-                            options={ this.subjectOptions }
+                            value= {props.subject}
+                            onChange={ props.updateSubject }
+                            options={ subjectOptions }
                         />
                     </div>
                 </div>  
                 <div className="topicSelector">
-                    <div className="select">    
+                    <div className="select">   
+                        <div className="selectTitle">Semester</div> 
                         <Select
-                            value="Semester"
-                            onChange={ this.props.updateSemester }
-                            options={ this.semesterOptions }
+                            value= {props.semester}
+                            onChange={ props.updateSemester }
+                            options={ semesterOptions }
                         />
                     </div>
                     <div className="select">
+                        <div className="selectTitle">University</div>
                         <Select
-                            value="University"
-                            onChange={ this.props.updateUniversity }
-                            options={ this.universityOptions }
+                            value= {props.University}
+                            onChange={ props.updateUniversity }
+                            options={ universityOptions }
                         />
                     </div>
                 </div>
             </div>
         )
-    }
-
 }
 
 function Uploads (props) {
@@ -142,14 +138,17 @@ function Uploads (props) {
     function UploadFromDeviceButton (props) {
         return (
             <div className="createNowButton">
-                <div className="imageContainer">
-    
+                <div className="input">
+                    <input type="file" id="file" name="file" onChange={(event) => props.updateImage(event.target.files[0]) } className="imageContainer">
+
+                    </input>
+                    <img src={ props.preview } width="90%"></img>
                 </div>
-                <div className="uploadFromDevice">
+                <label htmlFor="file" className="uploadFromDevice">
                     <li>Upload</li>
                     <li>from</li>
                     <li>device</li>
-                </div>
+                </label>
             </div>
         )
     }
@@ -160,7 +159,7 @@ function Uploads (props) {
             <div className="uploadsButtons">
                 <CreateNowButton></CreateNowButton>
                 <EmbedVideosButton></EmbedVideosButton>
-                <UploadFromDeviceButton></UploadFromDeviceButton>        
+                <UploadFromDeviceButton updateImage={ props.updateImage }></UploadFromDeviceButton>        
             </div>
         </div>
     )
@@ -171,7 +170,7 @@ function Description (props) {
         <div className="description">
             <h3>Description</h3>
             <div className="descriptionPosition">
-                <textArea className="descriptionTextArea"></textArea>
+                <textarea className="descriptionTextArea" value={ props.description } onChange = { event => props.updateDescription(event.target.value) } ></textarea>
             </div>
         </div>
     )
@@ -190,19 +189,65 @@ class PostDetails extends React.Component {
     constructor (props) {
         super(props);
         this.state = {
-            branch: 'Branch',
-            semester: 'Semester',
-            subject: 'Subject',
-            university: 'University'
+            image: '',
+            preview: '',
+            branch: 'branch',
+            semester: 'semester',
+            subject: 'subject',
+            university: 'university',
+            description: ''
         };
     }
 
-    UpdateState (value) {
+    updateBranch (branch) {
         this.setState({
-            branch: value.branch,
-            semester: value.semester,
-            subject: value.semester,
-            university: value.university
+            branch: branch
+        })
+    }
+
+    updateSubject (subject) {
+        this.setState({
+            subject: subject
+        })
+    }
+
+    
+    updateSemester (semester) {
+        this.setState({
+            semester: semester
+        })
+    }
+
+    
+    updateUniversity (university) {
+        this.setState({
+            university: university
+        })
+    }
+
+    updateImage (image) {
+        this.setState({
+            image: image
+        })
+    
+        if(image) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+            this.setState({
+                preview : reader.result
+            });
+        };
+        reader.readAsDataURL(image);
+        } else {
+            this.setState({
+            preview : null
+        })
+        }
+    }
+
+    updateDescription (description) {
+        this.setState({
+            description: description
         })
     }
 
@@ -211,9 +256,25 @@ class PostDetails extends React.Component {
             <div className="postDetails">
                 <div className="postDetailsContent">
                     <CommunityGuidelines></CommunityGuidelines>
-                    <TopicDetails></TopicDetails>
-                    <Uploads></Uploads>
-                    <Description></Description>
+                    <TopicDetails
+                        branch = {this.state.branch} 
+                        updateBranch={branch => this.updateBranch(branch)} 
+                        subject = {this.state.subject}
+                        updateSubject={subject => this.updateSubject(subject)} 
+                        semester = {this.state.semester}
+                        updateSemester={semester => this.updateSemester(semester)} 
+                        university = {this.state.university}
+                        updateUniversity={university => this.updateUniversity(university)}    
+                    ></TopicDetails>
+                    <Uploads
+                        image = {this.state.image}
+                        preview = {this.state.preview} 
+                        updateImage={this.updateImage}
+                    ></Uploads>
+                    <Description 
+                        description = {this.state.description} 
+                        updateDescription = { description => this.updateDescription(description) } 
+                    ></Description>
                     <PricingOptions></PricingOptions>
                 </div>
             </div>
