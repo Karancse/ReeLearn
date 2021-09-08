@@ -137,19 +137,19 @@ function Uploads (props) {
     
     function UploadFromDeviceButton (props) {
         return (
-            <div className="createNowButton">
-                <div className="input">
-                    <input type="file" id="file" name="file" onChange={(event) => props.updateImage(event.target.files[0]) } className="imageContainer">
-
-                    </input>
+            <label htmlFor="file" className="uploadFromDeviceButton">
+                <div className="input" className="imageContainer">
                     <img src={ props.preview } width="90%"></img>
                 </div>
-                <label htmlFor="file" className="uploadFromDevice">
+                <input type="file" id="file" name="file" onChange={(event) => props.updateImage(event.target.files[0]) } >
+
+                </input>
+                <div className="uploadFromDevice">
                     <li>Upload</li>
                     <li>from</li>
                     <li>device</li>
-                </label>
-            </div>
+                </div>
+            </label>
         )
     }
 
@@ -159,7 +159,7 @@ function Uploads (props) {
             <div className="uploadsButtons">
                 <CreateNowButton></CreateNowButton>
                 <EmbedVideosButton></EmbedVideosButton>
-                <UploadFromDeviceButton updateImage={ props.updateImage }></UploadFromDeviceButton>        
+                <UploadFromDeviceButton updateImage={ image => props.updateImage(image) }></UploadFromDeviceButton>        
             </div>
         </div>
     )
@@ -233,15 +233,15 @@ class PostDetails extends React.Component {
         if(image) {
             const reader = new FileReader();
             reader.onloadend = () => {
-            this.setState({
-                preview : reader.result
-            });
-        };
-        reader.readAsDataURL(image);
-        } else {
-            this.setState({
-            preview : null
-        })
+                this.setState({
+                    preview : reader.result
+                });
+            };
+            reader.readAsDataURL(image);
+            } else {
+                this.setState({
+                preview : null
+            })
         }
     }
 
@@ -250,6 +250,8 @@ class PostDetails extends React.Component {
             description: description
         })
     }
+
+
 
     render() {
         return(
@@ -269,13 +271,13 @@ class PostDetails extends React.Component {
                     <Uploads
                         image = {this.state.image}
                         preview = {this.state.preview} 
-                        updateImage={this.updateImage}
+                        updateImage={image => this.updateImage(image)}
                     ></Uploads>
                     <Description 
                         description = {this.state.description} 
                         updateDescription = { description => this.updateDescription(description) } 
                     ></Description>
-                    <PricingOptions></PricingOptions>
+                    <PricingOptions ></PricingOptions>
                 </div>
             </div>
         )
