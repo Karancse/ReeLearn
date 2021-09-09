@@ -38,12 +38,43 @@
     background: rgb(0, 55, 236);
 }
 
+.inputVideoName{
+    margin: 30px;
+}
+
+.inputVideoName .videoName{
+    padding: 10px 20px;
+}
+
 .topicDetails{
     margin-top: 55px;
+    display: flex;
+    flex-direction: row;
+}
+
+.topicSelector{
+    height: 100px;
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+.topicSelector .select {
+    width: 150px;
+    height: fit-content;
+}
+
+.topicSelector .select:hover{
+    cursor: pointer;
 }
 
 .branchNotSelected{
-    border: 2px solid rgb( 0, 0, 0);
+    border: 1px solid rgb(53, 53, 53);
+}
+
+.branchSelected{
+    border: 1px solid rgb(0, 0, 0);
 }
 
 .uploads{
@@ -63,14 +94,56 @@
     border-radius: 15px;
 }
 
-.createNow, .embedVideos, .uploadFromDevice {
+.uploadFromDeviceButton .imageContainer{
+    position: relative;
+    
+}
+
+input[name="file"] {
+    display: none;
+}
+
+.uploadFromDeviceButton .imageContainer img{
+    position: absolute;
+    max-width: 100%;
+    max-height: 100%;
+}
+
+
+
+.createNow, .uploadFromDevice, .embedVideos  {
     text-align: center;
     list-style: none;
     margin-top: 5px;
 }
 
-.createNow li, .embedVideos li, .uploadFromDevice li{
+.createNow li, .uploadFromDevice li, .embedVideos li{
     margin: 1px;
+}
+
+
+.uploadThumbnailSpace{
+    min-height: 150px;
+    width: 100%;
+    border: 2px solid rgb( 0, 0, 0);
+}
+
+.uploadThumbnailSpace .imagePosition {
+    height: 70px;
+    width: 100%;
+    margin-top: 20px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.uploadThumbnailSpace .inputPosition{
+    height: 50px;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    border: 2px solid rgb( 0, 0, 0);
 }
 
 .description{
@@ -90,6 +163,67 @@
     border: 2px solid rgb( 0, 0, 0);
     border-radius: 15px;
     padding: 20px;
+}
+
+.tagSpace{
+    width: 90%;
+    min-height: 150px;
+    margin: 20px 0px;
+    border: 2px solid rgb( 0, 0, 0);
+    padding: 20px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.tagSpace .tag{
+    width: fit-content;
+    height: 20px;
+    padding: 5px;
+    border: 1px solid rgb( 0, 0, 0);
+    margin: 10px 20px;
+    display: flex;
+    flex-direction: row;
+}
+
+.tagSpace .tagContent {
+    min-width: 50px;
+    height: 100%;
+    background-color: rgb(206, 228, 255);
+}
+
+.tagSpace .tagContent:hover {
+    background-color: rgb(182, 215, 255);
+} 
+
+.tagSpace .tagContent:focus {
+    background-color: rgb(255, 255, 255);
+} 
+
+.tagSpace .deleteTag{
+    width: 20px;
+    height: 20px;
+    border-left: 1px solid rgb( 0, 0, 0);
+    background-color: rgb(46, 95, 255);
+}
+
+.tagSpace .deleteTag:hover{
+    background-color: rgb(0, 55, 236);
+}
+
+.tagSpace .addTag{
+    width: 20px;
+    height: 20px;
+    padding: 2px;
+    border: 1px solid rgb( 0, 0, 0);
+    border-radius: 4px;
+    margin: 10px 20px;
+    background-color: rgb(46, 95, 255);
+    color: white;
+}
+
+.tagSpace .addTag:hover{
+    background-color: rgb(0, 55, 236);
 }
 
 .pricingOptions{
