@@ -1,5 +1,7 @@
 import React from 'react';
 import './additionalSettingsStyle.css';
+import S3 from "react-aws-s3";
+import {reactLocalStorage} from 'reactjs-localstorage';
 
 class AdditionalSettings extends React.Component {
 
@@ -9,11 +11,75 @@ class AdditionalSettings extends React.Component {
             moderatorUsername: '',
             quiz: '',
             colloborators: [''],
-            progressBarLength: 40         
+            progressBarLength: 40,
+            progressStatus: 'Uploading'      
         }
+        this.UploadVideo()
+    }
+
+    UploadVideo(){
+        const config = {
+            bucketName: "reelearnimages",
+            region: "ap-south-1",
+            accessKeyId: "AKIAVUI26QSLW4PA3PT6",
+            secretAccessKey: "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",
+            onProgress: console.log(1)
+          }
+          
+          const ReactS3Client = new S3(config);
+          ReactS3Client.uploadFile(this.props.video , reactLocalStorage.get('email')+'Video'+this.props.count)
+        /*    .on('httpUploadProgess',function(progress) {
+              var progressPercentage = Math.round(progress.loaded / progress.total * 100)
+              this.setState({
+                  progressBarLength : progressPercentage
+              })
+              if(progressPercentage == 100){
+                  this.setState({
+                      progressStatus: 'Uploaded Video...Uploading Thumbnail...'
+                  })
+              }
+            })
+        */    .then(data => {
+                console.log(data)
+                if (data.status === 204) {
+                console.log("success")
+                } else {
+                    console.log("fail")
+                }
+            })
+        
+        this.setState({
+            progressBarLength : 0
+        })
+
+        ReactS3Client.uploadFile(this.props.thumbnail , reactLocalStorage.get('email')+'Thumbnail'+this.props.count)
+    /*        .on('httpUploadProgess',function(progress) {
+              var progressPercentage = Math.round(progress.loaded / progress.total * 100)
+              this.setState({
+                  progressBarLength : progressPercentage
+              })
+              if(progressPercentage == 100){
+                  this.setState({
+                      progressStatus: 'Uploaded Successfully'
+                  })
+              }
+            })
+    */        .then(data => {
+                console.log(data)
+                if (data.status === 204) {
+                console.log("success")
+                } else {
+                    console.log("fail")
+                }
+            })
+            
+
     }
 
     render(){
+
+            //
+        
             return (
                 <div className="page">
                 <div className = "additionalSettings">
@@ -63,6 +129,7 @@ class AdditionalSettings extends React.Component {
                     </div>
                     <div className="uploadProgress">
                         <h4>Upload Progress</h4>
+                        {this.state.status}
                         <div className="progressBarSpace">
                             <div className="progressBar" style={{ width: this.state.progressBarLength + '%' }}></div>
                         </div>
@@ -75,10 +142,5 @@ class AdditionalSettings extends React.Component {
 }
 
 export default AdditionalSettings;
-
-
-
-
-
 
 
