@@ -154,3 +154,18 @@ h4{
 .navButtons button:hover{
     background:rgb(133, 124, 255);
 }
+
+.bottomButtons{
+    margin: 40px 0px;
+    height: 100px;
+    border: 2px solid rgb(0, 0, 0);
+    border-radius: 20px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+
+.bottomButton .profile{
+    width: 10%;
+}
