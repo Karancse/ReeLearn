@@ -45,7 +45,7 @@ function SearchBar (props) {
 function PostButton (props) {
     return (
         <div className='postButton'>
-            <button type="button" >Post Content for { props.searchKey }</button>
+            <button type="button" onClick={ () => props.pageUpdate('postDetails') } >Post Content for { props.searchKey }</button>
         </div>
     )
 }
@@ -148,7 +148,7 @@ function BottomButtons(props){
 
             </div>
             <div className="profile">
-                <img src="profile.JPG" onClick = { () => props.pageRedirect('profilePage') }></img>
+                <img src="profile.JPG" onClick = { () => props.pageUpdate('profilePage') }></img>
             </div>
         </div>
     )
@@ -183,12 +183,12 @@ class HomeScreen extends React.Component{
         return (
             <div className="homeScreen">
                 <SearchBar onChange = { searchKey => this.updateSearchKey(searchKey) } onSubmit = { () => this.updateSearchResult() } />
-                <PostButton searchKey = { this.state.searchedKey } />
+                <PostButton searchKey = { this.state.searchedKey } pageUpdate={ page => this.props.pageUpdate(page) } />
                 <TopVideos searchKey = { this.state.searchedKey } topVideoResult = { this.state.topVideoResult } />
                 <TopQuizzes searchKey = { this.state.searchedKey } />
                 <TopUniversities searchKey = { this.state.searchedKey } />
                 <NavButtons searchKey = { this.state.searchedKey } />
-                <BottomButtons pageRedirect = { page => this.props.pageRedirect('profilePage') } />
+                <BottomButtons pageUpdate = { page => this.props.pageUpdate('profilePage') } />
             </div>
         )
     }
@@ -198,7 +198,7 @@ class HomeScreen extends React.Component{
 function HomePage(props){
     return (
         <div className="homePage">
-            <HomeScreen pageRedirect = { page => props.pageRedirect(page) }/>
+            <HomeScreen pageUpdate = { page => props.pageUpdate(page) }/>
         </div>
     )
 }
