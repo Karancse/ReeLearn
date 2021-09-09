@@ -1,6 +1,10 @@
 import React , { useState } from 'react';
 import './postDetailsStyle.css';
+
+import Axios from 'axios';
 import Select from 'react-select';
+import S3 from "react-aws-s3";
+import {reactLocalStorage} from 'reactjs-localstorage';
 
 function CommunityGuidelines (props) {
     return (
@@ -16,17 +20,15 @@ function CommunityGuidelines (props) {
     )
 }
 
-class BranchDropdown extends React.Component{
-
+class InputVideoName extends React.Component {
     render() {
         return (
-            <div className="dropdown-content">
-                <p onClick = {this.setState({branchSelected: <div className='branchSelected'>branchToSelect</div>})}>CSE</p>
-                <p>MEC</p>
+            <div className = "inputVideoName">
+                <h3>Enter Video Name</h3>
+                <input type="text" name="videoName" className="videoName" onChange={event => this.props.updateVideoName(event.target.value)} value={this.props.videoName}></input>
             </div>
         )
     }
-
 }
 
 function TopicDetails (props){
@@ -105,9 +107,9 @@ function TopicDetails (props){
         )
 }
 
-function Uploads (props) {
+class Uploads extends React.Component {
 
-    function CreateNowButton (props) {
+    CreateNowButton (props) {
         return (
             <div className="createNowButton">
                 <div className="imageContainer">
@@ -121,7 +123,7 @@ function Uploads (props) {
         )
     }
     
-    function EmbedVideosButton (props) {
+    EmbedVideosButton (props) {
         return (
             <div className="embedVideosButton">
                 <div className="imageContainer">
@@ -135,13 +137,13 @@ function Uploads (props) {
         )
     }
     
-    function UploadFromDeviceButton (props) {
+    UploadFromDeviceButton (props) {
         return (
             <label htmlFor="file" className="uploadFromDeviceButton">
                 <div className="input" className="imageContainer">
-                    <img src={ props.preview } width="90%"></img>
+                    <img src={ props.videoPreview } width="90%"></img>
                 </div>
-                <input type="file" id="file" name="file" onChange={(event) => props.updateImage(event.target.files[0]) } >
+                <input type="file" id="file" name="file" onChange={(event) => props.updateVideo(event.target.files[0]) } >
 
                 </input>
                 <div className="uploadFromDevice">
@@ -153,16 +155,104 @@ function Uploads (props) {
         )
     }
 
+    render() {
     return (
-        <div className="uploads">
-            <h3>Uploads</h3>
-            <div className="uploadsButtons">
-                <CreateNowButton></CreateNowButton>
-                <EmbedVideosButton></EmbedVideosButton>
-                <UploadFromDeviceButton updateImage={ image => props.updateImage(image) }></UploadFromDeviceButton>        
+            <div className="uploads">
+                <h3>Uploads</h3>
+                <div className="uploadsButtons">
+                    <div className="createNowButton">
+                        <div className="imageContainer">
+    
+                        </div>
+                        <div className="createNow">
+                            <li>Create</li>
+                            <li>Now</li>
+                        </div>
+                    </div>
+                    <div className="embedVideosButton">
+                        <div className="imageContainer">
+        
+                        </div>
+                        <div className="embedVideos">
+                            <li>Embed</li>
+                            <li>videos</li>
+                        </div>
+                    </div>
+                    <label htmlFor="file" className="uploadFromDeviceButton">
+                        <div className="input" className="imageContainer">
+                            <img src={ this.props.videoPreview } width="90%"></img>
+                        </div>
+                        <input type="file" id="file" name="file" onChange={(event) => this.props.updateVideo(event.target.files[0]) } >
+
+                        </input>
+                        <div className="uploadFromDevice">
+                            <li>Upload</li>
+                            <li>from</li>
+                            <li>device</li>
+                        </div>
+                    </label>
+                </div>
             </div>
-        </div>
-    )
+        )
+    }
+}
+
+class UploadThumbnail extends React.Component {
+    render() {
+        if(this.props.video=='empty'){
+            return(
+                <></>   
+            )
+        }
+        return (
+            <div className="uploadThumbnailSpace">
+                <div className="imagePosition">
+                    <img src={ this.props.imagePreview } width="70px"></img>
+                </div>
+                <h5>Upload Thumbnail (optional)</h5>
+                <label htmlFor="thumbnail" className="inputPosition">
+                    <input type="file" id="thumbnail" name="thumbnail" onChange={(e) => this.props.updateImage(e.target.files[0])} />
+                </label>
+            </div>
+        )
+    }
+}
+
+class Tags extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            tags: []
+        }
+        for(var i=0; i<this.props.tags.length; i++){
+            var tagsCopy=this.state.tags;
+            tagsCopy.append(
+                <div className="tag">
+                    <input type="text" className="TagContent" >
+                        {this.props.tags[i]}
+                    </input>
+                    <button className="deleteTag">X</button>
+                </div>
+            )
+            this.setState({
+                tags:tagsCopy
+            })
+        }
+    }
+
+    render() {
+        if(this.props.video=='empty'){
+            return(
+                <></>
+            )
+        }
+        return (
+            <div className="tagSpace">
+                { this.state.tags }
+                <button className="addTag" onClick = {this.props.addTag} >+</button>
+            </div>
+        )
+    }
 }
 
 function Description (props) {
@@ -179,7 +269,7 @@ function Description (props) {
 function PricingOptions (props) {
     return (
     <div className="pricingOptions">
-        <button className="pricingOptionsButton">Pricing Options &rarr;</button>
+        <button className="pricingOptionsButton" onClick={ props.onClick }>Pricing Options &rarr;</button>
     </div>
     )
 }
@@ -189,95 +279,238 @@ class PostDetails extends React.Component {
     constructor (props) {
         super(props);
         this.state = {
+            videoName: '',
+            video: 'empty',
+            videoPreview: '',
             image: '',
-            preview: '',
+            imagePreview: '',
             branch: 'branch',
             semester: 'semester',
             subject: 'subject',
             university: 'university',
-            description: ''
+            tags: [],
+            description: '',
+            count: ''
         };
     }
 
-    updateBranch (branch) {
+    UpdateVideoName (videoName) {
+        this.setState({
+            videoName: videoName
+        })
+    }
+
+    UpdateBranch (branch) {
         this.setState({
             branch: branch
         })
     }
 
-    updateSubject (subject) {
+    UpdateSubject (subject) {
         this.setState({
             subject: subject
         })
     }
 
     
-    updateSemester (semester) {
+    UpdateSemester (semester) {
         this.setState({
             semester: semester
         })
     }
 
-    
-    updateUniversity (university) {
+    UpdateUniversity (university) {
+
         this.setState({
             university: university
         })
     }
 
-    updateImage (image) {
+    UpdateVideo (video) {
+
+        console.log("change")
+
         this.setState({
-            image: image
+            video: video
         })
-    
-        if(image) {
+
+        if(video) {
+            console.log('video')
             const reader = new FileReader();
             reader.onloadend = () => {
                 this.setState({
-                    preview : reader.result
+                    videoPreview : reader.result
+                });
+            };
+            reader.readAsDataURL(video);
+            } else {
+                this.setState({
+                videoPreview : null
+            })
+        }
+        console.log(this.state.video)
+        if(this.state.videoName === ''){
+            this.setState({
+                videoName: this.state.video.fileName
+            })
+        }
+    }
+
+    UpdateImage (image) {
+
+        console.log("change")
+
+        this.setState({
+            image: image
+        })
+
+        if(image) {
+            console.log('image')
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                this.setState({
+                    imagePreview : reader.result
                 });
             };
             reader.readAsDataURL(image);
             } else {
                 this.setState({
-                preview : null
+                imagePreview : null
             })
         }
+        console.log(this.state.image)
     }
 
-    updateDescription (description) {
+    UpdateDescription (description) {
         this.setState({
             description: description
         })
     }
 
 
+    async UploadVideo(props){
+        //if(props.image==''){
+        //    this.setState({
+        //        status: 'Upload a Video File'
+        //    })
+        //    return
+        //}
+        await Axios.post('http://localhost:3002/uploadVideo', {
+            email: reactLocalStorage.get('email'),
+            videoName: this.state.videoName,
+            branch: this.state.branch.value,
+            subject: this.state.subject.value,
+            semester: this.state.semester.value,
+            university: this.state.university.value,
+            tags: this.state.tags,
+            description: this.state.description
+        }, {
+            headers: {
+                'Content-Type': 'application/json;charset=UTF-8'
+            }
+        }).then((res) => {
+            this.setState({
+                status: res.data.status,
+                count: res.data.count
+            });
+            if(this.state.status=="Profile Not Found"){
+                this.props.pageUpdate('loginPage')
+            }
+            if(this.state.status=="Profile Found"){
+                
+                this.props.pageUpdate({
+                    video: this.state.video,
+                    thumbnail: this.state.image,
+                    count: this.state.count                    
+                })
+
+                /*
+
+                const config = {
+                  bucketName: "reelearnimages",
+                  region: "ap-south-1",
+                  accessKeyId: "AKIAVUI26QSLW4PA3PT6",
+                  secretAccessKey: "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"
+                }
+                
+                const ReactS3Client = new S3(config);
+                ReactS3Client.uploadFile(this.state.image , this.state.emailID+res.data.count)
+                .on('httpUploadProgess',function(progress) {
+                    var progressPercentage = Math.round(progress.loaded / progress.total * 100)
+                    this.setState({
+                        progressBarLength : progressPercentage
+                    })
+                    if(progressPercentage == 100){
+                        this.setState({
+                            progressStatus: 'Uploaded'
+                        })
+                    }
+                })
+                .then(data => {
+                  console.log(data)
+                  if (data.status === 204) {
+                    console.log("success")
+                  } else {
+                    console.log("fail")
+                  }
+                })
+                */
+            }
+        });
+    }
+
+    AddTag(props) {
+        var tagsCopy = props.tags;
+        tagsCopy.push('')
+        this.setState({
+            tags: tagsCopy
+        })
+    }
 
     render() {
         return(
             <div className="postDetails">
                 <div className="postDetailsContent">
                     <CommunityGuidelines></CommunityGuidelines>
+                    <InputVideoName
+                        videoName = {this.state.videoName}
+                        updateVideoName = {videoName => this.UpdateVideoName(videoName)}
+                    ></InputVideoName>
                     <TopicDetails
                         branch = {this.state.branch} 
-                        updateBranch={branch => this.updateBranch(branch)} 
+                        updateBranch={branch => this.UpdateBranch(branch)} 
                         subject = {this.state.subject}
-                        updateSubject={subject => this.updateSubject(subject)} 
+                        updateSubject={subject => this.UpdateSubject(subject)} 
                         semester = {this.state.semester}
-                        updateSemester={semester => this.updateSemester(semester)} 
+                        updateSemester={semester => this.UpdateSemester(semester)} 
                         university = {this.state.university}
-                        updateUniversity={university => this.updateUniversity(university)}    
+                        updateUniversity={university => this.UpdateUniversity(university)}    
                     ></TopicDetails>
                     <Uploads
-                        image = {this.state.image}
-                        preview = {this.state.preview} 
-                        updateImage={image => this.updateImage(image)}
+                        video = {this.state.video}
+                        videoPreview = {this.state.videoPreview} 
+                        updateVideo={video => this.UpdateVideo(video)}
                     ></Uploads>
+                    <UploadThumbnail
+                        video = {this.state.video}
+                        image = {this.state.image}
+                        imagePreview = {this.state.imagePreview}
+                        updateImage={image => this.UpdateImage(image)}
+                    ></UploadThumbnail>
+                    <Tags
+                        video = {this.state.video}
+                        tags = {this.state.tags}
+                        addTag = {this.AddTag}
+                    ></Tags> 
                     <Description 
                         description = {this.state.description} 
-                        updateDescription = { description => this.updateDescription(description) } 
+                        updateDescription = { description => this.UpdateDescription(description) } 
                     ></Description>
-                    <PricingOptions ></PricingOptions>
+                    <PricingOptions 
+                        onClick={ () => this.UploadVideo({
+                            image: this.state.image
+                        }) }
+                    ></PricingOptions>
                 </div>
             </div>
         )
