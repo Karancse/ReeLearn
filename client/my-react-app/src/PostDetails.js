@@ -34,7 +34,6 @@ class InputVideoName extends React.Component {
 function TopicDetails (props){
 
         const branchOptions = [
-            { value: 'branch', label: 'Branch' },
             { value: 'CSE', label: 'CSE' },
             { value: 'MEC', label: 'MEC' },
             { value: 'ECE', label: 'ECE' },
@@ -218,25 +217,12 @@ class UploadThumbnail extends React.Component {
     }
 }
 
+
 class Tags extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
             tags: []
-        }
-        for(var i=0; i<this.props.tags.length; i++){
-            var tagsCopy=this.state.tags;
-            tagsCopy.append(
-                <div className="tag">
-                    <input type="text" className="TagContent" >
-                        {this.props.tags[i]}
-                    </input>
-                    <button className="deleteTag">X</button>
-                </div>
-            )
-            this.setState({
-                tags:tagsCopy
-            })
         }
     }
 
@@ -247,9 +233,20 @@ class Tags extends React.Component {
             )
         }
         return (
-            <div className="tagSpace">
-                { this.state.tags }
-                <button className="addTag" onClick = {this.props.addTag} >+</button>
+            <div className="tags">
+                <h3>Tags</h3>
+                <div className="tagSpace">
+                    {// this.props.tagsHTML                     
+                        this.props.tags.map((tag, index) => (
+                            <div className="tag">
+                                <input type="text" className="tagContent" value = {tag} onChange={event => this.props.UpdateTag(event.target.value, index)}
+                                ></input>
+                                <button className="deleteTag">X</button>
+                            </div>
+                        ))
+                    }
+                   <button className="addTag" onClick = {this.props.addTag} >+</button>
+                </div>
             </div>
         )
     }
@@ -284,11 +281,12 @@ class PostDetails extends React.Component {
             videoPreview: '',
             image: '',
             imagePreview: '',
-            branch: 'branch',
-            semester: 'semester',
-            subject: 'subject',
-            university: 'university',
+            branch: 'unknown',
+            semester: 'unknown',
+            subject: 'unknown',
+            university: 'unknown',
             tags: [],
+            tagsHTML: '',
             description: '',
             count: ''
         };
@@ -396,14 +394,9 @@ class PostDetails extends React.Component {
         //    return
         //}
         await Axios.post('http://localhost:3002/uploadVideo', {
-            email: reactLocalStorage.get('email'),
-            videoName: this.state.videoName,
-            branch: this.state.branch.value,
-            subject: this.state.subject.value,
-            semester: this.state.semester.value,
-            university: this.state.university.value,
-            tags: this.state.tags,
-            description: this.state.description
+            //email: reactLocalStorage.get('email'),
+            email: 'jack123@gmail.com',
+            videoName: this.state.videoName
         }, {
             headers: {
                 'Content-Type': 'application/json;charset=UTF-8'
@@ -411,19 +404,53 @@ class PostDetails extends React.Component {
         }).then((res) => {
             this.setState({
                 status: res.data.status,
+                username: res.data.username,
+                videoUploadName: res.data.videoUploadName,
+                profileID: res.data.profileID,
                 count: res.data.count
             });
             if(this.state.status=="Profile Not Found"){
                 this.props.pageUpdate('loginPage')
             }
-            if(this.state.status=="Profile Found"){
-                
-                this.props.pageUpdate({
-                    video: this.state.video,
-                    thumbnail: this.state.image,
-                    count: this.state.count                    
+        })
+        if(this.state.status == 'Video Entry Created'){
+            console.log('ProfileID :', this.state.profileID)
+            console.log('Username :', this.state.username)
+            await Axios.post('http://localhost:3003/uploadVideo', {
+                email: reactLocalStorage.get('email'),
+                username: this.state.username,
+                videoName: this.state.videoName,  
+                videoUploadName: this.state.videoUploadName,
+                profileID: this.state.profileID,
+                branch: this.state.branch,
+                subject: this.state.subject,
+                semester: this.state.semester,
+                university: this.state.university,
+                tag: this.state.tags,
+                description: this.state.description
+            }).then((res) => {
+                this.setState({
+                    status: res.data.status,
+                    videoId: this.state.videoId
                 })
-
+            })
+        }
+        if(this.state.status == "Video Entry Created"){
+            await Axios.post('http://localhost:3002/updateVideoID', {
+                email: reactLocalStorage.get('email'),
+                videoName: this.state.videoName,
+                count: this.state.count,
+                videoId: this.state.videoId
+            })
+        }
+        if(this.state.status=="VideoID Updated"){       
+            this.props.pageUpdate({
+                video: this.state.video,
+                thumbnail: this.state.image,
+                count: this.state.count                    
+            })
+        }
+    }
                 /*
 
                 const config = {
@@ -455,9 +482,6 @@ class PostDetails extends React.Component {
                   }
                 })
                 */
-            }
-        });
-    }
 
     AddTag(props) {
         var tagsCopy = props.tags;
@@ -465,6 +489,33 @@ class PostDetails extends React.Component {
         this.setState({
             tags: tagsCopy
         })
+        console.log(tagsCopy)
+        //console.log(props.tagsHTML)
+        /*
+        var tagsHTMLCopy=<></>;
+        for(var i=0; i<props.tags.length; i++){
+            tagsHTMLCopy+=
+                <div className="tag">
+                    <input type="text" className="TagContent" >
+                        {props.tags[i]}
+                    </input>
+                    <button className="deleteTag">X</button>
+                </div>
+            
+        }
+        this.setState({
+            tagsHTML:tagsHTMLCopy
+        })
+        */
+    }
+
+    UpdateTag(tag, key){
+        var tagsCopy = this.state.tags;
+        tagsCopy[key] = tag;
+        this.setState({
+            tags: tagsCopy
+        })
+        console.log(tagsCopy)
     }
 
     render() {
@@ -500,7 +551,13 @@ class PostDetails extends React.Component {
                     <Tags
                         video = {this.state.video}
                         tags = {this.state.tags}
-                        addTag = {this.AddTag}
+                        tagsHTML = {this.state.tagsHTML}
+                        addTag = { () => this.AddTag({
+                            tags: this.state.tags,
+                            tagsHTML: this.state.tagsHTML
+                            }) 
+                        }
+                        UpdateTag = {(tag,key) => this.UpdateTag(tag,key)}
                     ></Tags> 
                     <Description 
                         description = {this.state.description} 
