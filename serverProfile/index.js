@@ -1,7 +1,5 @@
 const mongoose = require('mongoose');
 
-const { Router } = require ('express');
-const router = Router();
 const path = require('path');
 
 const express = require('express')
@@ -23,10 +21,10 @@ const Schema = mongoose.Schema,
 const model = mongoose.model;
 
 const ProfileSchema = Schema({
-	email: {
-		type: String,
-		required: true,
-	},
+    email: {
+	type: String,
+	required: true,
+    },
     username: {
         type: String,
         required: true
