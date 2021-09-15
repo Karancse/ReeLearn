@@ -1,7 +1,8 @@
 # ReeLearn
 
 <br>
-Watch, Share and Upload Educational Videos and Quizzes.
+# Watch, Share and Upload Educational Videos and Quizzes.
+<br>
 <br>
 
 client/my-react-app => client side files  <br>
