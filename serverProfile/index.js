@@ -14,9 +14,11 @@ var fs = require('fs');
 
 const cors = require('cors');
 const { profile } = require('console');
+const { HttpRequest } = require('aws-sdk');
 app.use(cors())
 
-const Schema = mongoose.Schema;
+const Schema = mongoose.Schema,
+      ObjectId = Schema.ObjectId;
 
 const model = mongoose.model;
 
@@ -25,6 +27,10 @@ const ProfileSchema = Schema({
 		type: String,
 		required: true,
 	},
+    username: {
+        type: String,
+        required: true
+    },
     role: {
         type: String,
         required: true
@@ -43,6 +49,14 @@ const ProfileSchema = Schema({
     },
     university: {
         type: String,
+        required: true,
+    },
+    videos: {
+        type: Object,
+        required: false
+    },
+    count: {
+        type: Number,
         required: true,
     }
 });
@@ -111,7 +125,7 @@ app.post("/createProfile", async (req, res) => {
 })
 
 app.post("/updateProfile", async (req, res) => {
-    const { email , degree , course , semester , university } = req.body;
+    const { email , role , degree , course , semester , university } = req.body;
 
 	console.log("Create Profile Request: "+email+" "+degree+" "+course+" "+semester+" "+university)
 	
@@ -130,6 +144,7 @@ app.post("/updateProfile", async (req, res) => {
         },
         {
             $set: { 
+                role: role,
                 degree: degree,
                 course: course,
                 semester: semester,
@@ -159,7 +174,7 @@ app.post("/getProfile", async (req, res) => {
                 status: "Profile Found",
                 role: profile1.role,
                 course: profile1.course,
-                branch: profile1.branch,
+                degree: profile1.degree,
                 semester: profile1.semester,
                 university: profile1.university
             })
@@ -169,6 +184,96 @@ app.post("/getProfile", async (req, res) => {
     return(
         res.send({
             status: 'Profile Not Found',
+        })
+    )
+})
+
+app.post("/uploadVideo", async (req, res) => {
+    const { email , videoName } = req.body;
+
+    console.log("Upload Video Request: "+videoName,email)
+	
+	var profile1 = await Profile.findOne({ email })
+
+    console.log('profile1: ',profile1)
+
+    if(profile1){
+        profile1.count+=1;
+        console.log(profile1);
+        var videos = profile1.videos
+        videoUploadName = email+"Video"+profile1.count
+        var videoToUpload={
+            videoUploadName: videoUploadName,
+            videoName: videoName,
+            email: email
+        }
+        console.log("videoToUpload =",videoToUpload)
+        
+        if(videoName in videos){
+            videos.videoName[profile1.count] = {
+                videoUploadName: videoUploadName
+            }
+            profile1.videos = videos
+        }
+        else{ 
+            profile1.videos[videoName]={
+                [profile1.count]: {
+                    videoUploadName: videoUploadName
+                }
+            }
+        }
+
+        console.log("profile1.count =",profile1.count)
+        console.log("profile1.videos =",profile1.videos) 
+        console.log('profile1._id =',profile1._id)
+
+        return(
+            res.send({
+                status: "Video Entry Created",
+                videoUploadName: videoUploadName,
+                profileID: profile1._id,
+                username: profile1.username,
+                count: profile1.count
+            })
+        )           
+        profile1.save();
+
+        return (
+            res.send({
+                status: "Profile Found",
+                count: profile1.count
+            })
+        )
+    }
+    
+    return(
+        res.send({
+            status: 'Profile Not Found',
+        })
+    )
+})
+
+app.post("/updateVideoID", async (req, res) => {
+    const { email , videoName, count, videoId } = req.body;
+
+    console.log("Update VideoID Request: "+videoName, count, videoId, email)
+	
+	var profile1 = await Profile.findOne({ email })
+
+    console.log('profile1: ',profile1)
+
+    if(profile1){
+        profile1.videos[videoName][count].videoId = videoId
+        console.log('profile1.videos =',profile1.videos)
+        return(
+            res.send({
+                status: 'VideoID Updated'
+            })
+        )
+    }
+    return(
+        res.send({
+            status: 'Profile Not Found'
         })
     )
 })
