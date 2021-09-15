@@ -1,59 +1,54 @@
 import React from 'react';
 import './additionalSettingsStyle.css';
 import S3 from "react-aws-s3";
+//var ReactS3Uploader = require('react-s3-uploader');
+
+import ReactS3Uploader from 'react-s3-uploader';
 import {reactLocalStorage} from 'reactjs-localstorage';
 
-class AdditionalSettings extends React.Component {
+class UploadWithProgress extends React.Component {
 
     constructor(props){
         super(props);
         this.state = {
+            video: this.props.video
             moderatorUsername: '',
             quiz: '',
             colloborators: [''],
-            progressBarLength: 40,
-            progressStatus: 'Uploading'      
+            progressBarLength: 0,
+            progressStatus: ''      
         }
-        this.UploadVideo()
     }
 
     UploadVideo(){
+        this.setState({
+            progressStatus: 'Uploading'
         const config = {
             bucketName: "reelearnimages",
-            region: "ap-south-1",
-            accessKeyId: "AKIAVUI26QSLW4PA3PT6",
-            secretAccessKey: "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",
-            onProgress: console.log(1)
-          }
-          
-          const ReactS3Client = new S3(config);
-          ReactS3Client.uploadFile(this.props.video , reactLocalStorage.get('email')+'Video'+this.props.count)
-        /*    .on('httpUploadProgess',function(progress) {
-              var progressPercentage = Math.round(progress.loaded / progress.total * 100)
-              this.setState({
-                  progressBarLength : progressPercentage
-              })
-              if(progressPercentage == 100){
-                  this.setState({
-                      progressStatus: 'Uploaded Video...Uploading Thumbnail...'
-                  })
-              }
-            })
-        */    .then(data => {
-                console.log(data)
-                if (data.status === 204) {
-                console.log("success")
-                } else {
-                    console.log("fail")
+            region: "Key",
+            accessKeyId: 'Key',
+            secretAccessKey: "Key",
+            /*
+            onUploadProgress: function (progress) {
+                console.log(33)
+                console.log('Progress =',progress)
+                var progressPercentage = Math.round(progress.loaded / progress.total * 100)
+                this.setState({
+                    progressBarLength : progressPercentage
+                })
+                if(progressPercentage == 100){
+                    this.setState({
+                        progressStatus: 'Uploaded Successfully'
+                    })
                 }
-            })
-        
-        this.setState({
-            progressBarLength : 0
-        })
-
-        ReactS3Client.uploadFile(this.props.thumbnail , reactLocalStorage.get('email')+'Thumbnail'+this.props.count)
-    /*        .on('httpUploadProgess',function(progress) {
+            }
+            */
+        }
+                      
+        const ReactS3Client = new S3(config);
+    
+        ReactS3Client.uploadFile(this.state.video , this.props.videoUploadName )
+    /*        .onUploadProgress('httpUploadProgess',function(progress) {
               var progressPercentage = Math.round(progress.loaded / progress.total * 100)
               this.setState({
                   progressBarLength : progressPercentage
@@ -64,7 +59,8 @@ class AdditionalSettings extends React.Component {
                   })
               }
             })
-    */        .then(data => {
+    */      
+            .then(data => {
                 console.log(data)
                 if (data.status === 204) {
                 console.log("success")
@@ -72,8 +68,6 @@ class AdditionalSettings extends React.Component {
                     console.log("fail")
                 }
             })
-            
-
     }
 
     render(){
@@ -134,6 +128,7 @@ class AdditionalSettings extends React.Component {
                             <div className="progressBar" style={{ width: this.state.progressBarLength + '%' }}></div>
                         </div>
                     </div>
+                    <button type="button"onClick={ () => this.UploadVideo() }>Upload</button>
                 </div>
                 </div>
             )
@@ -141,6 +136,4 @@ class AdditionalSettings extends React.Component {
     
 }
 
-export default AdditionalSettings;
-
-
+export default UploadWithProgress;
