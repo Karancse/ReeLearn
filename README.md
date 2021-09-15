@@ -1,5 +1,8 @@
 # ReeLearn
 
+<br>
+Watch, Share and Upload Educational Videos and Quizzes.
+<br>
 
 client/my-react-app => client side files  <br>
 serverMongoDB => Authentication  <br>
