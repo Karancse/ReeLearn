@@ -450,37 +450,6 @@ class PostDetails extends React.Component {
             })
         }
     }
-                /*
-
-                const config = {
-                  bucketName: "reelearnimages",
-                  region: "ap-south-1",
-                  accessKeyId: "AKIAVUI26QSLW4PA3PT6",
-                  secretAccessKey: "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"
-                }
-                
-                const ReactS3Client = new S3(config);
-                ReactS3Client.uploadFile(this.state.image , this.state.emailID+res.data.count)
-                .on('httpUploadProgess',function(progress) {
-                    var progressPercentage = Math.round(progress.loaded / progress.total * 100)
-                    this.setState({
-                        progressBarLength : progressPercentage
-                    })
-                    if(progressPercentage == 100){
-                        this.setState({
-                            progressStatus: 'Uploaded'
-                        })
-                    }
-                })
-                .then(data => {
-                  console.log(data)
-                  if (data.status === 204) {
-                    console.log("success")
-                  } else {
-                    console.log("fail")
-                  }
-                })
-                */
 
     AddTag(props) {
         var tagsCopy = props.tags;
