@@ -2,6 +2,6 @@
 
 
 client/myreactapp => client side files  <br>
-server => Authentication  <br>
-serverMongoDB => User Profile Details  <br>
-serverVideos => Video Details  <br>
+serverMongoDB => Authentication  <br>
+serverProfile => Public details about the user  <br>
+serverVideos => Details about the uploaded videos  <br>
