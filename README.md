@@ -1,7 +1,7 @@
 # ReeLearn
 
 
-client -> myreactapp => client side files
-server => Authentication
-serverMongoDB => User Profile Details
-serverVideos => Video Details
+client/myreactapp/client side files  <br>
+server => Authentication  <br>
+serverMongoDB => User Profile Details  <br>
+serverVideos => Video Details  <br>
