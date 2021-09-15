@@ -227,6 +227,8 @@ app.post("/uploadVideo", async (req, res) => {
         console.log("profile1.videos =",profile1.videos) 
         console.log('profile1._id =',profile1._id)
 
+	profile1.save()   
+	
         return(
             res.send({
                 status: "Video Entry Created",
@@ -236,14 +238,6 @@ app.post("/uploadVideo", async (req, res) => {
                 count: profile1.count
             })
         )           
-        profile1.save();
-
-        return (
-            res.send({
-                status: "Profile Found",
-                count: profile1.count
-            })
-        )
     }
     
     return(
@@ -265,6 +259,7 @@ app.post("/updateVideoID", async (req, res) => {
     if(profile1){
         profile1.videos[videoName][count].videoId = videoId
         console.log('profile1.videos =',profile1.videos)
+	profile1.save()
         return(
             res.send({
                 status: 'VideoID Updated'
