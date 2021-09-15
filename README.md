@@ -1,7 +1,7 @@
 # ReeLearn
 
 <br>
-# Watch, Share and Upload Educational Videos and Quizzes.
+<b>Watch, Share and Upload Educational Videos and Quizzes</b>
 <br>
 <br>
 
