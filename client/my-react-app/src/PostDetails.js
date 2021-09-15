@@ -394,8 +394,7 @@ class PostDetails extends React.Component {
         //    return
         //}
         await Axios.post('http://localhost:3002/uploadVideo', {
-            //email: reactLocalStorage.get('email'),
-            email: 'jack123@gmail.com',
+            email: reactLocalStorage.get('email'),
             videoName: this.state.videoName
         }, {
             headers: {
