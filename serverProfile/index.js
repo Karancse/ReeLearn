@@ -125,9 +125,9 @@ app.post("/createProfile", async (req, res) => {
 app.post("/updateProfile", async (req, res) => {
     const { email , role , degree , course , semester , university } = req.body;
 
-	console.log("Create Profile Request: "+email+" "+degree+" "+course+" "+semester+" "+university)
+    console.log("Create Profile Request: "+email+" "+degree+" "+course+" "+semester+" "+university)
 	
-	profile = await Profile.findOne({ email })
+    profile = await Profile.findOne({ email })
 
     if(!profile){
         console.log("Invalid")
@@ -164,7 +164,7 @@ app.post("/getProfile", async (req, res) => {
 
     console.log("Get Profile Request: "+email)
 	
-	var profile1 = await Profile.findOne({ email })
+    var profile1 = await Profile.findOne({ email })
 
     if(profile1){
         return (
@@ -191,7 +191,7 @@ app.post("/uploadVideo", async (req, res) => {
 
     console.log("Upload Video Request: "+videoName,email)
 	
-	var profile1 = await Profile.findOne({ email })
+    var profile1 = await Profile.findOne({ email })
 
     console.log('profile1: ',profile1)
 
