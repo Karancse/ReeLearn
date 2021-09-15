@@ -35,35 +35,35 @@ const VideoSchema = Schema({
 		type: ObjectId,
 		required: true,
 	},
-    branch: {
+    	branch: {
 		type: String,
 		required: true,
 	},
-    subject: {
+    	subject: {
 		type: String,
 		required: true,
 	},
-    semester: {
+    	semester: {
 		type: String,
 		required: true,
 	},
-    university: {
+    	university: {
 		type: String,
 		required: true,
 	},
-    tags: {
+    	tags: {
 		type: Array,
 		required: true,
 	},
-    description: {
+    	description: {
 		type: String,
 		required: true,
 	},
-    views: {
+    	views: {
 		type: Number,
 		required: true,
 	},
-    likes: {
+    	likes: {
 		type: Number,
 		required: true,
 	}
@@ -98,38 +98,35 @@ var Video = model('videos', VideoSchema);
 app.post("/uploadVideo", async (req, res) => {
     const videoToUpload = req.body;
 
-	videoToUpload['views']=0
-	videoToUpload['likes']=0
+    videoToUpload['views']=0
+    videoToUpload['likes']=0
 
     console.log("Upload Video Request: ",videoToUpload)
 	
     const videoUploadName = videoToUpload.videoUploadName
 
-	var video = await Video.findOne({ videoUploadName })
+    var video = await Video.findOne({ videoUploadName })
 
     if(video){
         console.log("Video Already Exists")
-        res.send({
-            status: 'Video Already Exists'
-        })
-        return
-    }
-	console.log('Video Entry Created')
-	return (
-		res.send({
-			status: 'Video Entry Created'
-		})
+        return(
+	    res.send({
+            	status: 'Video Already Exists'
+            })
 	)
+    }
+    console.log('Video Entry Created')
+    
     video = videoToUpload
 
     await video.save();
 
-    console.log("Uploaded");
-    return(
-        res.send({
-            status: 'Uploaded',
-        })
+    return (
+	res.send({
+		status: 'Video Entry Created'
+	})
     )
+
 })
 
 
